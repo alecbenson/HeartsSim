@@ -3,6 +3,7 @@ try:
 except ImportError:
     pass
 import player
+import sys
 
 class HeartsGame:
     '''A class used to manage the players, cards, and points within the game'''
@@ -25,7 +26,7 @@ class HeartsGame:
                 raise ValueError("Hearts requires between 1 and 4 players")
         except ValueError as err:
             print str(err)
-            return self.__startGame()
+            sys.exit(1)
         self.numPlayers = numPlayers
         self.__addPlayers()
 

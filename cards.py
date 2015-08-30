@@ -3,6 +3,7 @@
 from random import shuffle
 from string import Template
 import hearts
+import sys
 
 class Card:
     '''A simple class that represents a standard playing card'''
@@ -24,14 +25,19 @@ class Card:
     def __getWeight(self):
         '''getWeight will determine the value of the card. It is used for determining which player wins the hand'''
         try:
-            return int(self.value)
+            weight = int(self.value)
         except ValueError:
-            return {
-            "J":11,
-            "Q":12,
-            "K":13,
-            "A":14,
-            }.get(self.value)
+            try:
+                weight = {
+                "J":11,
+                "Q":12,
+                "K":13,
+                "A":14,
+                }.get(self.value)
+            except KeyError as err:
+                print str(err)
+                sys.exit(1)
+        return weight
 
 class Deck:
     '''A simple class that represents a standard deck of 52 cards'''
