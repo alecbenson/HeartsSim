@@ -15,6 +15,10 @@ class HeartsGame:
         self.round = 0
         self.maxPoints = 100
 
+        #Start the game
+        self.__play()
+
+    def __play(self):
         self.__initGame()
         self.__startGame()
 
@@ -50,13 +54,23 @@ class HeartsGame:
         botsToAdd = self.maxPlayers - self.numHumanPlayers
         for index in range(botsToAdd):
             botName = "Bot_#{0}".format(index)
-            print "Adding {0} to the game.".format(botName)
             self.__addPlayer(botName, False)
 
     def __addPlayer(self, name, isHuman):
         '''A helper function used to add a bot or human player to the list of players'''
         newPlayer = player.Player(name, isHuman)
+
+        #The following logic will suffix names with _#X if the name is already in use
+        count = 0
+        while newPlayer.name in (otherPlayer.name for otherPlayer in self.players):
+            count += 1
+            newPlayer.name = "{0}_#{1}".format(name,count)
+        if count != 0:
+            print "The name '{0}' has already been taken, so you will be" \
+            "known as '{1}' instead".format(name, newPlayer.name)
+
         self.players.append(newPlayer)
+        print "{0} joined the game.".format(newPlayer.name)
 
     def __startGame(self):
         '''Starts the turn cycle'''
