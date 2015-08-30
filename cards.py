@@ -67,6 +67,3 @@ class Deck:
         '''Deal a single card from the deck'''
         self.shuffle()
         return self.cards.pop(0)
-
-if __name__ == '__main__':
-    game = hearts.HeartsGame()
