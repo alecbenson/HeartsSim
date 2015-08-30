@@ -63,15 +63,15 @@ class Deck:
     '''A simple class that represents a standard deck of 52 cards'''
     def __init__(self):
         self.count = 52
-        self.values = [" 1", " 2", " 3", " 4", " 5", " 6", " 7", " 8", " 9", "10", " J", " Q", " K", " A"]
-        self.suits = ["♥", "♦", "♠", "♣"]
         self.cards = []
         self.__newDeck()
 
     def __newDeck(self):
         '''Instantiate a new, shuffled deck'''
-        for value in self.values:
-            for suit in self.suits:
+        values = [" 1", " 2", " 3", " 4", " 5", " 6", " 7", " 8", " 9", "10", " J", " Q", " K", " A"]
+        suits = ["♥", "♦", "♠", "♣"]
+        for value in values:
+            for suit in suits:
                 card = Card(suit, value)
                 self.cards.append(card)
         self.shuffle()
