@@ -1,4 +1,7 @@
-from cards import Deck, Card
+try:
+    from cards import Deck, Card
+except ImportError:
+    pass
 import player
 
 class HeartsGame:
