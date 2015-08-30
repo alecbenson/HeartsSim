@@ -26,7 +26,7 @@ class HeartsGame:
                 raise ValueError("Hearts requires between 1 and 4 players")
         except ValueError as err:
             print str(err)
-            sys.exit(1)
+            self.__initGame()
         self.numPlayers = numPlayers
         self.__addPlayers()
 
