@@ -1,9 +1,10 @@
 class Player:
     '''A class that represents a card player'''
-    def __init__(self, name, cards):
+    def __init__(self, name, isHuman):
         self.name = name
-        self.cards = cards
+        self.cards = []
         self.score = 0
+        self.isHuman = False
 
     def __str__(self):
         return self.name
