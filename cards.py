@@ -4,7 +4,7 @@ from random import shuffle
 from string import Template
 import hearts
 import sys
-import functools
+from functools import total_ordering
 
 @total_ordering
 class Card:
@@ -45,19 +45,19 @@ class Card:
     def __getPoints(self):
         if(self.suit == "♥"):
             return 1
-        else if(self.suit == "♠" and self.value == "Q"):
+        elif(self.suit == "♠" and self.value == "Q"):
             return 13
         else:
             return 0
 
     # Required for total_ordering
     def __eq__(self, other):
-        pass
+        return False
 
     # This function may be replaced with __le__, __gt__, or __ge__
     # but one of those is required for total_ordering
     def __lt__(self, other):
-        pass
+        return ((self.suit, self.weight) < (other.suit, other.weight))
 
 class Deck:
     '''A simple class that represents a standard deck of 52 cards'''
