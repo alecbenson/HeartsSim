@@ -88,5 +88,10 @@ class Deck:
         self.shuffle()
         return self.cards.pop(0)
 
-if __name__ == '__main__':
-    game = hearts.HeartsGame()
+class Hand:
+    '''A class to contain the set of cards a player has available'''
+    def __init__(self, cards):
+        self.cards = cards
+
+    def sortCards(self):
+        self.cards.sort()
