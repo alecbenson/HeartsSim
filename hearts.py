@@ -1,13 +1,9 @@
-try:
-    from cards import Deck, Card
-except ImportError:
-    pass
-import player
+import player, cards, sys
 
 class HeartsGame:
     '''A class used to manage the players, cards, and points within the game'''
     def __init__(self):
-        self.deck = Deck()
+        self.deck = cards.Deck()
         self.players = []
         self.numHumanPlayers = 0
         self.maxPlayers = 4
@@ -18,12 +14,9 @@ class HeartsGame:
         self.__play()
 
     def __play(self):
+        '''Used to start the game of hearts'''
         self.__initGame()
         self.__startGame()
-
-    def __playerCount(self):
-        '''Returns an integer representing the number of players in the game'''
-        return len(players)
 
     def __initGame(self):
         '''Invite players and start the game'''
@@ -39,16 +32,23 @@ class HeartsGame:
         self.__addHumanPlayers()
         self.__addBotPlayers()
 
+    def __startGame(self):
+        '''Starts the turn cycle'''
+        self.deck.dealHands(self.players)
+        #while True:
+        for player in self.players:
+            print "It is now {0}'s turn.".format(player)
+            print player.hand
+
+    def __playerCount(self):
+        '''Returns an integer representing the number of players in the game'''
+        return len(players)
+
     def __addHumanPlayers(self):
         '''Adds each human player into the game'''
         for index in range(self.numHumanPlayers):
-            while(True):
-                playerName = raw_input("Enter a name for player {0}: ".format(index))
-                if(not playerName.isalnum()):
-                    print("Only alphanumeric characters are allowed. Please enter another name.")
-                    continue
-                self.__addPlayer(playerName, True)
-                break
+            playerName = raw_input("Enter a name for player {0}: ".format(index))
+            self.__addPlayer(playerName, True)
 
     def __addBotPlayers(self):
         '''Adds additional bot players into the game'''
@@ -76,15 +76,8 @@ class HeartsGame:
         self.players.append(newPlayer)
         print "{0} joined the game.".format(newPlayer.name)
 
-    def __startGame(self):
-        '''Starts the turn cycle'''
-        while True:
-            for player in self.players:
-                print "It is now {0}'s turn.".format(player)
-
-    def __queryCardToPlay(self):
+    def __queryCardToPlay(self, player):
         '''Asks the player which card they would like to play during their turn'''
-
 
 if __name__ == '__main__':
     game = HeartsGame()
