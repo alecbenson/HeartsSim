@@ -13,32 +13,40 @@ class Card:
         self.suit = suit
         self.value = value
         self.owner = ""
-        self.weight = self.__getWeight()
-        self.template = ["┌───────┐", "│${spacing}${val}     │",
-        "│       │", "│   ${suit}   │",
-        "│       │", "│     ${val}${spacing}│", "└───────┘"]
+        self.weight = self._getWeight()
+        self.template = ["${color}┌─────┐", "${color}│${spacing}${val}   │",
+        "${color}│  ${suit}  │","${color}│   ${val}${spacing}│", "${color}└─────┘"]
 
     def __str__(self):
         '''
-        This is used to display a card in string form. This is done by joining
-        each line of the tempalte with newlines. Then, the parameters are
-        substituted by suit and rank. The 'spacing' parameter is necessary because
-        '10' takes two characters instead of one.
+        This is used to display a card in string form.
         '''
-        temp = '\n'.join(str(line) for line in self.template)
-        spaces = " "*(2-len(self.value))
-        keys = dict(val=self.value, suit=self.suit, spacing=spaces)
-        formatted = Template(temp).substitute(keys)
-        return self.__getColor() + formatted
+        return '\n'.join(self.templatedParts())
 
-    def __getColor(self):
+    def _getColor(self):
         '''Gets the color that should be used for printing the card'''
         if self.suit == "♥" or self.suit == "♦":
             return "\033[31m"
         return "\033[0m"
 
-    def __getWeight(self):
-        '''getWeight will determine the value of the card. It is used for determining which player wins the hand'''
+    def templatedParts(self):
+        '''
+        templatedParts is a helper function that returns a list that is identical
+        to self.template except that the template parameters are substituted
+        '''
+        result = []
+        spaces = " "*(2-len(self.value))
+        keys = dict(color = self._getColor(), val=self.value, suit=self.suit, spacing=spaces)
+
+        for line in self.template:
+            result.append(Template(line).substitute(keys))
+        return result
+
+    def _getWeight(self):
+        '''
+        getWeight will determine the value of the card.
+        It is used for determining which player wins the hand
+        '''
         weight = 0
         try:
             return int(self.value)
@@ -49,7 +57,7 @@ class Card:
                 print str(err)
                 sys.exit(1)
 
-    def __getPoints(self):
+    def _getPoints(self):
         '''Returns the number of points a card is worth'''
         if(self.suit == "♥"):
             return 1
@@ -69,16 +77,16 @@ class Card:
         '''
         #the suitOrder dictionary is needed to ensure that cards are suited by
         #suit first, and rank second.
-        suitOrder = {"♥":100, "♠":200, "♦":300, "♣":400}
-        return (suitOrder.get(self.suit) + self.__getWeight()) < (suitOrder.get(other.suit) + other.__getWeight())
+        suitOrder = {"♦":100, "♣":200, "♥":300, "♠":400}
+        return (suitOrder.get(self.suit) + self._getWeight()) < (suitOrder.get(other.suit) + other._getWeight())
 
 class Deck:
     '''A simple class that represents a standard deck of 52 cards'''
     def __init__(self):
         self.cards = []
-        self.__newDeck()
+        self._newDeck()
 
-    def __newDeck(self):
+    def _newDeck(self):
         '''Instantiate a new, shuffled deck'''
         values = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
         suits = ["♥", "♦", "♠", "♣"]
@@ -114,19 +122,33 @@ class Hand:
     def __init__(self):
         self.cards = []
 
+    def __len__(self):
+        '''Returns the number of cards in the hand'''
+        return len(self.cards)
+
     def addCard(self, card):
         '''Puts the given card in the player's hand'''
         self.cards.append(card)
 
+    def playCard(self, card):
+        ''' Removes the card from the player's hand and puts it in play.'''
+        try:
+            return self.cards.remove(card)
+        except ValueError as err:
+            print str(err)
+
     def sortCards(self):
+        '''Sorts all of the cards in the hand'''
         self.cards.sort()
 
     def __str__(self):
-        hand = ""
+        #Please find it within yourselves to forgive me for the following
         self.sortCards()
-        index = 0
-        for card in self.cards:
-            index += 1
-            cardWithIndex = "{0}\t({1})\n".format(card, index)
-            hand += cardWithIndex
-        return hand
+        #Split the cards into a list of 5 elements (one for each line of the card).
+        #Each element will contain a tuple consisting of
+        #X elements, where X is the # of cards in the hand
+        zipped = zip(*[card.templatedParts() for card in self.cards])
+
+        #Now, we convert each element of 'zipped' into a string, and join them by newlines
+        result = "\n".join("".join(map(str,l)) for l in zipped)
+        return result

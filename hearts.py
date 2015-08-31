@@ -11,14 +11,14 @@ class HeartsGame:
         self.maxPoints = 100
 
         #Start the game
-        self.__play()
+        self._play()
 
-    def __play(self):
+    def _play(self):
         '''Used to start the game of hearts'''
-        self.__initGame()
-        self.__startGame()
+        self._initGame()
+        self._startGame()
 
-    def __initGame(self):
+    def _initGame(self):
         '''Invite players and start the game'''
         try:
             playerInput = raw_input("How many human players? ")
@@ -27,30 +27,31 @@ class HeartsGame:
                 raise ValueError("Hearts requires between 1 and 4 players")
         except ValueError as err:
             print str(err)
-            return self.__initGame()
+            return self._initGame()
         self.numHumanPlayers = numHumanPlayers
-        self.__addHumanPlayers()
-        self.__addBotPlayers()
+        self._addHumanPlayers()
+        self._addBotPlayers()
 
-    def __startGame(self):
+    def _startGame(self):
         '''Starts the turn cycle'''
         self.deck.dealHands(self.players)
-        #while True:
-        for player in self.players:
-            print "It is now {0}'s turn.".format(player)
-            print player.hand
+        while True:
+            for player in self.players:
+                print "It is now {0}'s turn.".format(player)
+                print player.hand
+                player.queryCardToPlay()
 
-    def __playerCount(self):
+    def _playerCount(self):
         '''Returns an integer representing the number of players in the game'''
         return len(players)
 
-    def __addHumanPlayers(self):
+    def _addHumanPlayers(self):
         '''Adds each human player into the game'''
         for index in range(self.numHumanPlayers):
             playerName = raw_input("Enter a name for player {0}: ".format(index))
-            self.__addPlayer(playerName, True)
+            self._addPlayer(playerName, True)
 
-    def __addBotPlayers(self):
+    def _addBotPlayers(self):
         '''Adds additional bot players into the game'''
         if self.numHumanPlayers >= self.maxPlayers:
             return
@@ -58,9 +59,9 @@ class HeartsGame:
         botsToAdd = self.maxPlayers - self.numHumanPlayers
         for index in range(botsToAdd):
             botName = "Bot_#{0}".format(index)
-            self.__addPlayer(botName, False)
+            self._addPlayer(botName, False)
 
-    def __addPlayer(self, name, isHuman):
+    def _addPlayer(self, name, isHuman):
         '''A helper function used to add a bot or human player to the list of players'''
         newPlayer = player.Player(name, isHuman)
 
@@ -75,9 +76,6 @@ class HeartsGame:
 
         self.players.append(newPlayer)
         print "{0} joined the game.".format(newPlayer.name)
-
-    def __queryCardToPlay(self, player):
-        '''Asks the player which card they would like to play during their turn'''
 
 if __name__ == '__main__':
     game = HeartsGame()

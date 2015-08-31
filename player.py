@@ -18,3 +18,18 @@ class Player:
     def addPoints(self, points):
         '''Adds X points to the player's score'''
         self.score += points
+
+    def queryCardToPlay(self):
+        '''
+        Asks the player which card they would like to play during their turn.
+        Returns the card object that was selected
+        '''
+        cardToPlay = raw_input("{0}, enter the number of the card you would like to play: ".format(self.name))
+        try:
+            cardIndex = int(cardToPlay) - 1
+            if cardIndex >= len(self.hand) or cardIndex < 0:
+                raise ValueError("Out of bounds card index.")
+        except ValueError as err:
+            print "That's not a valid item in your hand. Try again:"
+            return self.queryCardToPlay()
+        return self.hand.cards.pop(cardIndex)
