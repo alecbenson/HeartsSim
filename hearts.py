@@ -9,6 +9,7 @@ class HeartsGame:
         self.maxPlayers = 4
         self.round = 0
         self.maxPoints = 100
+        self.playedCards = cards.Hand()
 
         #Start the game
         self._play()
@@ -36,10 +37,13 @@ class HeartsGame:
         '''Starts the turn cycle'''
         self.deck.dealHands(self.players)
         while True:
+            #Empty the hand at the beginning of the round
+            self.playedCards.empty()
             for player in self.players:
-                print "It is now {0}'s turn.".format(player)
-                print player.hand
-                player.queryCardToPlay()
+                print "It is now {0}'s turn:\n{1}".format(player, player.hand)
+                chosenCard = player.queryCardToPlay()
+                self.playedCards.addCard(chosenCard)
+                print "The following cards have been played:\n{0}".format(self.playedCards)
 
     def _playerCount(self):
         '''Returns an integer representing the number of players in the game'''

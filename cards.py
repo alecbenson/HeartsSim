@@ -130,6 +130,10 @@ class Hand:
         '''Puts the given card in the player's hand'''
         self.cards.append(card)
 
+    def empty(self):
+        '''Empties the hand'''
+        self.cards = []
+
     def playCard(self, card):
         ''' Removes the card from the player's hand and puts it in play.'''
         try:
