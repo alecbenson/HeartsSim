@@ -3,7 +3,6 @@ try:
 except ImportError:
     pass
 import player
-import sys
 
 class HeartsGame:
     '''A class used to manage the players, cards, and points within the game'''
@@ -43,8 +42,13 @@ class HeartsGame:
     def __addHumanPlayers(self):
         '''Adds each human player into the game'''
         for index in range(self.numHumanPlayers):
-            playerName = raw_input("Enter a name for player {0}: ".format(index))
-            self.__addPlayer(playerName, True)
+            while(True):
+                playerName = raw_input("Enter a name for player {0}: ".format(index))
+                if(not playerName.isalnum()):
+                    print("Only alphanumeric characters are allowed. Please enter another name.")
+                    continue
+                self.__addPlayer(playerName, True)
+                break
 
     def __addBotPlayers(self):
         '''Adds additional bot players into the game'''
