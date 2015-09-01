@@ -1,4 +1,4 @@
-import player, cards
+import player, cards, os, locale
 
 class HeartsGame:
     '''A class used to manage the players, cards, and points within the game'''
@@ -80,6 +80,15 @@ class HeartsGame:
 
         self.players.append(newPlayer)
         print "{0} joined the game.".format(newPlayer.name)
+
+class Environment:
+    def __init__(self):
+        # I'm sorry for using system
+        # COLUMNS is a local environment variable which means that it is not
+        # passed to subprocesses (e.g. the Python interpreter)
+        os.system("export COLUMNS")
+        self.columns = os.environ['COLUMNS']
+        self.encoding = locale.getdefaultlocale()[1]
 
 if __name__ == '__main__':
     game = HeartsGame()
