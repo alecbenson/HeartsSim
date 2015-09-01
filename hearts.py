@@ -1,4 +1,4 @@
-import player, cards, sys
+import player, cards
 
 class HeartsGame:
     '''A class used to manage the players, cards, and points within the game'''
