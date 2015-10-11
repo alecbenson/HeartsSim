@@ -1,4 +1,4 @@
-from cards import Hand
+from card import Hand
 
 class Player:
     '''A class that represents a card player'''

@@ -1,4 +1,4 @@
-import player, cards, os, locale
+import player, card, os, locale
 
 class HeartsGame:
     '''A class used to manage the players, cards, and points within the game'''
