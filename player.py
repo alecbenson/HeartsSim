@@ -32,4 +32,4 @@ class Player:
         except ValueError as err:
             print "That's not a valid item in your hand. Try again:"
             return self.queryCardToPlay()
-        return self.hand.cards.pop(cardIndex)
+        return self.hand.playCard(cardIndex)

@@ -9,13 +9,14 @@ from functools import total_ordering
 @total_ordering
 class Card:
     '''A simple class that represents a standard playing card'''
-    def __init__(self, suit, value):
+    def __init__(self, suit, value, index=0):
         self.suit = suit
         self.value = value
         self.owner = ""
         self.weight = self._getWeight()
+        self.loc = index
         self.template = ["${color}┌─────┐", "${color}│${spacing}${val}   │",
-        "${color}│  ${suit}  │","${color}│   ${val}${spacing}│", "${color}└─────┘"]
+        "${color}│  ${suit}  │","${color}│   ${val}${spacing}│", "${color}└─────┘", "${color}${loc}\033[0m"]
 
     def __str__(self):
         '''
@@ -36,7 +37,11 @@ class Card:
         '''
         result = []
         spaces = " "*(2-len(self.value))
-        keys = dict(color = self._getColor(), val=self.value, suit=self.suit, spacing=spaces)
+        if self.loc is 1:
+            str_index = '{: >4}'.format(self.loc)
+        else:
+            str_index = '{: >7}'.format(self.loc)
+        keys = dict(color = self._getColor(), val=self.value, suit=self.suit, spacing=spaces, loc = str_index)
 
         for line in self.template:
             result.append(Template(line).substitute(keys))
@@ -137,13 +142,15 @@ class Hand:
     def playCard(self, card):
         ''' Removes the card from the player's hand and puts it in play.'''
         try:
-            return self.cards.remove(card)
+            return self.cards.pop(card)
         except ValueError as err:
             print str(err)
 
     def sortCards(self):
         '''Sorts all of the cards in the hand'''
         self.cards.sort()
+        for i in range(len(self.cards)):
+            (self.cards[i]).loc = i + 1
 
     def __str__(self):
         #Please find it within yourselves to forgive me for the following
