@@ -1,6 +1,5 @@
 #Printing cards uses use non ascii characters, we need to set encoding
 # -*- coding: utf-8 -*-
-from random import shuffle
 from string import Template
 import hearts
 import sys
@@ -84,82 +83,3 @@ class Card:
         #suit first, and rank second.
         suitOrder = {"♦":100, "♣":200, "♥":300, "♠":400}
         return (suitOrder.get(self.suit) + self._getWeight()) < (suitOrder.get(other.suit) + other._getWeight())
-
-class Deck:
-    '''A simple class that represents a standard deck of 52 cards'''
-    def __init__(self):
-        self.cards = []
-        self._newDeck()
-
-    def _newDeck(self):
-        '''Instantiate a new, shuffled deck'''
-        values = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
-        suits = ["♥", "♦", "♠", "♣"]
-        for value in values:
-            for suit in suits:
-                card = Card(suit, value)
-                self.cards.append(card)
-        self.shuffle()
-
-    def __str__(self):
-        return '\n'.join(str(card) for card in self.cards)
-
-    def __len__(self):
-        return len(self.cards)
-
-    def shuffle(self):
-        '''Shuffle all cards in the deck'''
-        shuffle(self.cards)
-
-    def deal(self):
-        '''Pull a single card from the deck'''
-        return self.cards.pop(0)
-
-    def dealHands(self, players):
-        '''Distributes the deck amongst the players'''
-        while len(self.cards) != 0:
-            for player in players:
-                dealtCard = self.deal()
-                player.hand.addCard(dealtCard)
-
-class Hand:
-    '''A class to contain the set of cards a player has available'''
-    def __init__(self):
-        self.cards = []
-
-    def __len__(self):
-        '''Returns the number of cards in the hand'''
-        return len(self.cards)
-
-    def addCard(self, card):
-        '''Puts the given card in the player's hand'''
-        self.cards.append(card)
-
-    def empty(self):
-        '''Empties the hand'''
-        self.cards = []
-
-    def playCard(self, card):
-        ''' Removes the card from the player's hand and puts it in play.'''
-        try:
-            return self.cards.pop(card)
-        except ValueError as err:
-            print str(err)
-
-    def sortCards(self):
-        '''Sorts all of the cards in the hand'''
-        self.cards.sort()
-        for i in range(len(self.cards)):
-            (self.cards[i]).loc = i + 1
-
-    def __str__(self):
-        #Please find it within yourselves to forgive me for the following
-        self.sortCards()
-        #Split the cards into a list of 5 elements (one for each line of the card).
-        #Each element will contain a tuple consisting of
-        #X elements, where X is the # of cards in the hand
-        zipped = zip(*[card.templatedParts() for card in self.cards])
-
-        #Now, we convert each element of 'zipped' into a string, and join them by newlines
-        result = "\n".join("".join(map(str,l)) for l in zipped)
-        return result

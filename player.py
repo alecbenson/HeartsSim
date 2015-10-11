@@ -1,10 +1,10 @@
-from card import Hand
+import hand
 
 class Player:
     '''A class that represents a card player'''
     def __init__(self, name, isHuman):
         self.name = name
-        self.hand = Hand()
+        self.hand = hand.Hand()
         self.score = 0
         self.isHuman = False
 
