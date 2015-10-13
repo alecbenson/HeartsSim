@@ -80,6 +80,28 @@ class HeartsGame:
 
         self.players.append(newPlayer)
         print "{0} joined the game.".format(newPlayer.name)
+    
+    def passCards():
+        if self.round % 4 is not 3  #Not holding cards
+            for player in self.players:
+                for i in range(3): #pick 3 cards
+                    player.passedCards.append(player.queryCardToPlay())
+            for player in self.players:
+                if self.round % 4 is 0 #Passing left
+                    player.passedCards[(i+3)%4].passedCards:
+                    player.hand.addCard(card)
+                    player.hand.sortCards()
+                elif self.round %4 is 1 #Passing right
+                    player.passedCards[(i+1)%4].passedCards:
+                    player.hand.addCard(card)
+                    player.hand.sortCards()
+                elif self.round %4 is 2 #Passing Across
+                    player.passedCards[(i+2)%4].passedCards:
+                    player.hand.addCard(card)
+                    player.hand.sortCards()
+            #Clear the passed cards
+            for player in self.players
+                player.passedCards = []
 
 if __name__ == '__main__':
     game = HeartsGame()
