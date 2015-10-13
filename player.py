@@ -46,14 +46,13 @@ class Player:
         chosenCard = self.hand[cardIndex]
 
         if not self.hand.isLegal(chosenCard, round, firstCard):
-            print "{0} MADE AN ILLEGAL MOVE!!!!\n SUPER ILLEGAL!!! SO ILLEGAL".format(self.name)
             return self.queryCardToPlay("That's not a legal move. Try again: ", round, firstCard)
 
         # Break hearts if the heart is a legal move and hearts is not broken
         if chosenCard.suit == "♥" and round.heartsBroken == False:
             round.breakHearts()
 
-        self.hand.sortCards()
+        print "{0} played:\n{1}".format(self.name, chosenCard)
         return self.hand.playCard(cardIndex)
 
     def _queryForCard(self, prompt):
@@ -64,8 +63,12 @@ class Player:
         '''
         if self.isHuman:
             try:
+                #Show the player his/her hand
+                print self.hand
+
                 cardToPlay = raw_input("{0}, {1}".format(self.name, prompt))
                 cardIndex = int(cardToPlay) - 1
+
                 # If out of bounds, ask again
                 if not self._isSelectionInBounds(cardIndex):
                     return self._queryForCard("that wasn't a valid choice. Try again: ")

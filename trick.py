@@ -3,6 +3,7 @@ class Trick:
     def __init__(self):
         self.played_cards = {}
         self.start_card = None
+        print "\n\nNEW TRICK:"
 
     def add(self, player, card):
         ''' Keys a player in the trick with the card that they played '''
@@ -29,6 +30,7 @@ class Trick:
 
         winning_player.addPoints(trick_points)
         self._trick_summary(winning_player, trick_points)
+
         return winning_player
 
     def _trick_summary(self, winning_player, trick_points):
@@ -44,3 +46,11 @@ class Trick:
         zipped = zip(*[card.templatedParts() for card in self.played_cards.values()])
         result = "\n".join("".join(map(str,l)) for l in zipped)
         return result
+
+    def orderPlayers(self, players):
+        order = []
+        winner = self.score()
+        nextStartPlayer = players.index(winner)
+        for i in range (len(players)):
+            order.append(players[(nextStartPlayer + i)% 4])
+        return order

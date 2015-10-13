@@ -59,13 +59,12 @@ class HeartsGame:
                 current_trick = trick.Trick()
                 self.discard_pile.empty()
                 for player in self.players:
-                    print player.hand
                     prompt = "It is your turn -- choose a card to play: "
                     chosenCard = player.queryCardToPlay(
                         prompt, self.round, current_trick.start_card)
                     current_trick.add(player, chosenCard)
                 # Score the trick
-                current_trick.score()
+                self.players = current_trick.orderPlayers(self.players)
                 print current_trick
                 # Add the played cards to the discard pile
                 self.discard_pile.addCards(current_trick.card_list())
@@ -130,7 +129,6 @@ class HeartsGame:
         # pick 3 cards to give up
         for player in self.players:
             for i in range(3):
-                print player.hand
                 player.passedCards.append(player.queryCardToPass())
 
         for player in self.players:
