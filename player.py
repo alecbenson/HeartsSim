@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import hand
 from random import randint
 
@@ -45,7 +46,12 @@ class Player:
         chosenCard = self.hand[cardIndex]
 
         if not self.hand.isLegal(chosenCard, round, firstCard):
+            print "{0} MADE AN ILLEGAL MOVE!!!!\n SUPER ILLEGAL!!! SO ILLEGAL".format(self.name)
             return self.queryCardToPlay("That's not a legal move. Try again: ", round, firstCard)
+
+        # Break hearts if the heart is a legal move and hearts is not broken
+        if chosenCard.suit == "♥" and round.heartsBroken == False:
+            round.breakHearts()
 
         self.hand.sortCards()
         return self.hand.playCard(cardIndex)

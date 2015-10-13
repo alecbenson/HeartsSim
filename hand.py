@@ -43,11 +43,13 @@ class Hand:
     def isLegal(self, chosenCard, round, firstCard):
         if firstCard is None:
             if round.firstTrick:
+                print "You won't be able to do this later"
                 return True  # TODO: change to only return True on 2 of clubs
             if round.heartsBroken:
                 return True
             elif chosenCard.suit != '♥':
                 return True
+            #Hearts not broken, but heart card is picked
             return False
         if round.firstTrick:
             if chosenCard.suit == '♣':

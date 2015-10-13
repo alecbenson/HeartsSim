@@ -69,6 +69,7 @@ class HeartsGame:
                 print current_trick
                 # Add the played cards to the discard pile
                 self.discard_pile.addCards(current_trick.card_list())
+                self.round.firstTrick = False
             self.round.newRound()
         # Determine Winner
         self._score_card()
