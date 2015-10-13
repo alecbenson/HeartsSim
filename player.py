@@ -21,13 +21,20 @@ class Player:
         '''Adds X points to the player's score'''
         self.score += points
 
+    def queryCardToPass(self):
+        return self._queryForCard("select a card that you would like to pass: ")
+
     def queryCardToPlay(self):
+        return self._queryForCard("select a card that you would like to play: ")
+
+    def _queryForCard(self, prompt):
         '''
-        Asks the player which card they would like to play during their turn.
+        Asks the player to select a card to remove from their hand.
+        The prompt parameter is used to specify a message to display to the user.
         Returns the card object that was selected
         '''
         if self.isHuman:
-            cardToPlay = raw_input("{0}, enter the number of the card you would like to play: ".format(self.name))
+            cardToPlay = raw_input("{0}, {1}".format(self.name, prompt))
             try:
                 cardIndex = int(cardToPlay) - 1
                 if cardIndex >= len(self.hand) or cardIndex < 0:

@@ -36,10 +36,11 @@ class HeartsGame:
     def _startGame(self):
         '''Starts the turn cycle'''
         self.deck.dealHands(self.players)
+        self.passCards()
         while True: # while not gameover(), currently a placeholder
             # Pass Cards
             # Begin loop: do 13 times (until player hands are empty)
-            
+
             # Empty the hand at the beginning of the round
             self.discard_pile.empty()
             for player in self.players:
@@ -52,7 +53,7 @@ class HeartsGame:
             # End loop
             self.round.newRound()
         # Determine Winner
-        
+
     def _playerCount(self):
         '''Returns an integer representing the number of players in the game'''
         return len(players)
@@ -88,28 +89,38 @@ class HeartsGame:
 
         self.players.append(newPlayer)
         print "{0} joined the game.".format(newPlayer.name)
-    
-    def passCards():
-        if self.round.count % 4 is not 3:  #Not holding cards
-            for player in self.players:
-                for i in range(3): #pick 3 cards
-                    player.passedCards.append(player.queryCardToPlay())
-            for player in self.players:
-                if self.round.count % 4 is 0: #Passing left
-                    player.passedCards[(i+3)%4].passedCards
+
+    def passCards(self):
+        #If we are not holding cards, return
+        round_count = self.round.count
+        if (round_count % 4) == 3:
+            return
+
+        #pick 3 cards to give up
+        for player in self.players:
+            for i in range(3):
+                print player.hand
+                player.passedCards.append(player.queryCardToPass())
+
+        for player in self.players:
+            if (round_count % 4) == 0: #Passing left
+                for card in self.players[(i+1)%4].passedCards:
                     player.hand.addCard(card)
-                    player.hand.sortCards()
-                elif self.round.count %4 is 1: #Passing right
-                    player.passedCards[(i+1)%4].passedCards
+                player.hand.sortCards()
+
+            elif (round_count %4) == 1: #Passing right
+                for card in self.players[(i+3)%4].passedCards:
                     player.hand.addCard(card)
-                    player.hand.sortCards()
-                elif self.round.count %4 is 2: #Passing Across
-                    player.passedCards[(i+2)%4].passedCards
+                player.hand.sortCards()
+
+            elif (round_count %4) == 2: #Passing Across
+                for card in self.players[(i+2)%4].passedCards:
                     player.hand.addCard(card)
-                    player.hand.sortCards()
-            #Clear the passed cards
-            for player in self.players:
-                player.passedCards = []
+                player.hand.sortCards()
+
+        #Clear the passed cards
+        for player in self.players:
+            player.passedCards = []
 
 if __name__ == '__main__':
     game = HeartsGame()
