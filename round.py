@@ -1,4 +1,4 @@
-class round:
+class Round:
     def __init__(self):
         self.heartsBroken = False
         self.firstTrick = True

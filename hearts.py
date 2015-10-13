@@ -1,4 +1,4 @@
-import player, card, deck, hand
+import player, card, deck, hand, round
 
 class HeartsGame:
     '''A class used to manage the players, cards, and points within the game'''
@@ -7,7 +7,7 @@ class HeartsGame:
         self.players = []
         self.numHumanPlayers = 0
         self.maxPlayers = 4
-        self.round = 0
+        self.round = Round()
         self.maxPoints = 100
         self.playedCards = hand.Hand()
 
@@ -36,7 +36,7 @@ class HeartsGame:
     def _startGame(self):
         '''Starts the turn cycle'''
         self.deck.dealHands(self.players)
-        while self.round < 13: # while not gameover()
+        while True: # while not gameover(), currently a placeholder
             # Pass Cards
             # Begin loop: do 13 times (until player hands are empty)
             
@@ -50,7 +50,7 @@ class HeartsGame:
             # score trick
             # set turn order
             # End loop
-            self.round += 1
+            self.round.newRound()
         # Determine Winner
 
     def _playerCount(self):
@@ -90,20 +90,20 @@ class HeartsGame:
         print "{0} joined the game.".format(newPlayer.name)
     
     def passCards():
-        if self.round % 4 is not 3  #Not holding cards
+        if self.round.count % 4 is not 3  #Not holding cards
             for player in self.players:
                 for i in range(3): #pick 3 cards
                     player.passedCards.append(player.queryCardToPlay())
             for player in self.players:
-                if self.round % 4 is 0 #Passing left
+                if self.round.count % 4 is 0 #Passing left
                     player.passedCards[(i+3)%4].passedCards:
                     player.hand.addCard(card)
                     player.hand.sortCards()
-                elif self.round %4 is 1 #Passing right
+                elif self.round.count %4 is 1 #Passing right
                     player.passedCards[(i+1)%4].passedCards:
                     player.hand.addCard(card)
                     player.hand.sortCards()
-                elif self.round %4 is 2 #Passing Across
+                elif self.round.count %4 is 2 #Passing Across
                     player.passedCards[(i+2)%4].passedCards:
                     player.hand.addCard(card)
                     player.hand.sortCards()
