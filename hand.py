@@ -34,6 +34,34 @@ class Hand:
         for i in range(len(self.cards)):
             (self.cards[i]).loc = i + 1
 
+    def isLegal(self, chosenCard, round, firstCard):
+        if firstCard is None:
+            if round.firstTrick:
+                return True # TODO: change to only return True on 2 of clubs
+            if round.heartsBroken:
+                return True
+            elif chosenCard.suit is not '''heart''':
+                return True
+            return False
+        if round.firstTrick:
+            if chosenCard.suit is '''club''':
+                return True
+            if not self._hasSuit('''clubs'''):
+                if (chosenCard.suit is not '''heart''') or not (chosenCard.suit is '''spade''' and chosenCard.value is '''Queen'''):
+                    return True
+                return False
+        if chosenCard.suit is firstCard.suit:
+            return True
+        if not self._hasSuit(firstCard.suit)
+            return True
+        return False
+
+    def _hasSuit(self, suit):
+        for card in self.cards:
+            if card.suit is suit:
+                return True
+        return False
+
     def __str__(self):
         #Please find it within yourselves to forgive me for the following
         self.sortCards()

@@ -24,8 +24,13 @@ class Player:
     def queryCardToPass(self):
         return self._queryForCard("select a card that you would like to pass: ")
 
-    def queryCardToPlay(self):
-        return self._queryForCard("select a card that you would like to play: ")
+    def queryCardToPlay(self, round, firstCard):
+        chosenCard = self._queryForCard("select a card that you would like to play: ")
+        while (not self.hand.isLegal(chosenCard, round, firstCard)):
+            self.hand.addCard(chosenCard)
+            chosenCard = self._queryForCard("select a card that you would like to play: ")
+        self.hand.sortCards()
+        return chosenCard
 
     def _queryForCard(self, prompt):
         '''

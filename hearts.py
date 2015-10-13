@@ -53,7 +53,7 @@ class HeartsGame:
                 self.discard_pile.empty()
                 for player in self.players:
                     print "It is now {0}'s turn:\n{1}".format(player, player.hand)
-                    chosenCard = player.queryCardToPlay()
+                    chosenCard = player.queryCardToPlay(self.round, current_trick.start_card)
                     current_trick.add(player, chosenCard)
                 #Score the trick
                 current_trick.score()
