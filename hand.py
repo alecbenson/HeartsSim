@@ -9,8 +9,12 @@ class Hand:
         '''Returns the number of cards in the hand'''
         return len(self.cards)
 
+    def addCards(self, cards):
+        '''Puts the given card in the hand'''
+        self.cards.extend(cards)
+
     def addCard(self, card):
-        '''Puts the given card in the player's hand'''
+        '''Puts the given card in the hand'''
         self.cards.append(card)
 
     def empty(self):
@@ -18,7 +22,7 @@ class Hand:
         self.cards = []
 
     def playCard(self, card):
-        ''' Removes the card from the player's hand and puts it in play.'''
+        ''' Removes the card from the hand and puts it in play.'''
         try:
             return self.cards.pop(card)
         except ValueError as err:

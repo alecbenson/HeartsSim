@@ -1,4 +1,4 @@
-import player, card, deck, hand
+import player, card, deck, hand, trick
 
 class HeartsGame:
     '''A class used to manage the players, cards, and points within the game'''
@@ -9,7 +9,7 @@ class HeartsGame:
         self.maxPlayers = 4
         self.round = 0
         self.maxPoints = 100
-        self.playedCards = hand.Hand()
+        self.discard_pile = hand.Hand()
 
         #Start the game
         self._play()
@@ -37,13 +37,15 @@ class HeartsGame:
         '''Starts the turn cycle'''
         self.deck.dealHands(self.players)
         while True:
-            #Empty the hand at the beginning of the round
-            self.playedCards.empty()
+            #Start a new trick
+            current_trick = trick.Trick()
             for player in self.players:
                 print "It is now {0}'s turn:\n{1}".format(player, player.hand)
                 chosenCard = player.queryCardToPlay()
-                self.playedCards.addCard(chosenCard)
-                print "The following cards have been played:\n{0}".format(self.playedCards)
+                current_trick.add(player, chosenCard)
+            current_trick.score()
+            self.discard_pile.addCards(current_trick.card_list())
+            print current_trick
 
     def _playerCount(self):
         '''Returns an integer representing the number of players in the game'''
