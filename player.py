@@ -7,7 +7,7 @@ class Player:
         self.hand = hand.Hand()
         self.score = 0
         self.isHuman = False
-
+        self.passedCards = []
     def __str__(self):
         return self.name
 

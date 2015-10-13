@@ -24,8 +24,8 @@ class HeartsGame:
         try:
             playerInput = raw_input("How many human players? ")
             numHumanPlayers = int(playerInput)
-            if numHumanPlayers > self.maxPlayers or numHumanPlayers < 1:
-                raise ValueError("Hearts requires between 1 and 4 players")
+            if numHumanPlayers > self.maxPlayers or numHumanPlayers < 0:
+                raise ValueError("Hearts requires between 0 and 4 players")
         except ValueError as err:
             print str(err)
             return self._initGame()
@@ -82,6 +82,28 @@ class HeartsGame:
 
         self.players.append(newPlayer)
         print "{0} joined the game.".format(newPlayer.name)
+    
+    def passCards():
+        if self.round % 4 is not 3  #Not holding cards
+            for player in self.players:
+                for i in range(3): #pick 3 cards
+                    player.passedCards.append(player.queryCardToPlay())
+            for player in self.players:
+                if self.round % 4 is 0 #Passing left
+                    for card in self.players[(i+1)%4).passedCards:
+                        player.hand.addCard(card)
+                    player.hand.sortCards()
+                elif self.round %4 is 1 #Passing right
+                    for card in self.players[(i+3)%4).passedCards:
+                        player.hand.addCard(card)
+                    player.hand.sortCards()
+                elif self.round %4 is 2 #Passing Across
+                    for card in self.players[(i+2)%4).passedCards:
+                        player.hand.addCard(card)
+                    player.hand.sortCards()
+            #Clear the passed cards
+            for player in self.players
+                player.passedCards = []
 
 if __name__ == '__main__':
     game = HeartsGame()
