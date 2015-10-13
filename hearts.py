@@ -24,8 +24,8 @@ class HeartsGame:
         try:
             playerInput = raw_input("How many human players? ")
             numHumanPlayers = int(playerInput)
-            if numHumanPlayers > self.maxPlayers or numHumanPlayers < 1:
-                raise ValueError("Hearts requires between 1 and 4 players")
+            if numHumanPlayers > self.maxPlayers or numHumanPlayers < 0:
+                raise ValueError("Hearts requires between 0 and 4 players")
         except ValueError as err:
             print str(err)
             return self._initGame()
