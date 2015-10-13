@@ -35,6 +35,7 @@ class Deck:
 
     def dealHands(self, players):
         '''Distributes the deck amongst the players'''
+
         while len(self.cards) != 0:
             for player in players:
                 dealtCard = self.deal()

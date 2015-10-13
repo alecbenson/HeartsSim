@@ -47,4 +47,4 @@ class Player:
             '''
             Bots play a random card
             '''
-            return self.hand.playCard(randint(0, len(self.hand) - 1))
+            return self.hand.playCard(randint(0, len(self.hand) -1 ))

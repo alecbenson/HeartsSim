@@ -19,6 +19,12 @@ class HeartsGame:
         self._initGame()
         self._startGame()
 
+    def _isGameOver(self):
+        for player in self.players:
+            if player.score >= self.maxPoints:
+                return True
+        return False
+
     def _initGame(self):
         '''Invite players and start the game'''
         try:
@@ -35,28 +41,41 @@ class HeartsGame:
 
     def _startGame(self):
         '''Starts the turn cycle'''
-        self.deck.dealHands(self.players)
-        self.passCards()
-        while True: # while not gameover(), currently a placeholder
-            # Pass Cards
-            # Begin loop: do 13 times (until player hands are empty)
+        while self._isGameOver() == False:
+            self.deck = deck.Deck()
+            self.deck.dealHands(self.players)
+            self.passCards()
 
-            # Empty the hand at the beginning of the round
-            self.discard_pile.empty()
-            for player in self.players:
-                print "It is now {0}'s turn:\n{1}".format(player, player.hand)
-                chosenCard = player.queryCardToPlay()
-                self.discard_pile.addCard(chosenCard)
-                print "The following cards have been played:\n{0}".format(self.discard_pile)
-            # score trick
-            # set turn order
-            # End loop
+            #There are 13 tricks in a hand
+            for i in range(13):
+                # Empty the hand at the beginning of the round
+                current_trick = trick.Trick()
+                self.discard_pile.empty()
+                for player in self.players:
+                    print "It is now {0}'s turn:\n{1}".format(player, player.hand)
+                    chosenCard = player.queryCardToPlay()
+                    current_trick.add(player, chosenCard)
+                #Score the trick
+                current_trick.score()
+                print current_trick
+                #Add the played cards to the discard pile
+                self.discard_pile.addCards(current_trick.card_list())
             self.round.newRound()
         # Determine Winner
+        self._score_card()
 
     def _playerCount(self):
         '''Returns an integer representing the number of players in the game'''
         return len(players)
+
+    def _score_card(self):
+        ''' Prints a nice, readable scorecard '''
+        max_name_len = max([len(player.name) for player in self.players]) + 5
+        table_row = "+" + (max_name_len * "-") + "+"
+        print table_row
+        for player in self.players:
+            print "{0}: {1}".format(player.name, player.score)
+            print table_row
 
     def _addHumanPlayers(self):
         '''Adds each human player into the game'''
@@ -103,6 +122,7 @@ class HeartsGame:
                 player.passedCards.append(player.queryCardToPass())
 
         for player in self.players:
+            i = self.players.index(player)
             if (round_count % 4) == 0: #Passing left
                 for card in self.players[(i+1)%4].passedCards:
                     player.hand.addCard(card)
