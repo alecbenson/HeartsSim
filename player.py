@@ -1,8 +1,10 @@
 import hand
 from random import randint
 
+
 class Player:
     '''A class that represents a card player'''
+
     def __init__(self, name, isHuman):
         self.name = name
         self.hand = hand.Hand()
@@ -21,16 +23,32 @@ class Player:
         '''Adds X points to the player's score'''
         self.score += points
 
-    def queryCardToPass(self):
-        return self._queryForCard("select a card that you would like to pass: ")
+    def _isSelectionInBounds(self, index):
+        '''
+        Makes sure that the index the player chose is in their hand.
+        The index is the zero indexed choice of the player
+        '''
+        try:
+            if index >= len(self.hand) or index < 0:
+                raise ValueError("Out of bounds card index.")
+        except ValueError as err:
+            return False
+        return True
 
-    def queryCardToPlay(self, round, firstCard):
-        chosenCard = self._queryForCard("select a card that you would like to play: ")
-        while (not self.hand.isLegal(chosenCard, round, firstCard)):
-            self.hand.addCard(chosenCard)
-            chosenCard = self._queryForCard("select a card that you would like to play: ")
+    def queryCardToPass(self):
+        cardIndex = self._queryForCard(
+            "select a card that you would like to pass: ")
+        return self.hand.playCard(cardIndex)
+
+    def queryCardToPlay(self, prompt, round, firstCard):
+        cardIndex = self._queryForCard(prompt)
+        chosenCard = self.hand[cardIndex]
+
+        if not self.hand.isLegal(chosenCard, round, firstCard):
+            return self.queryCardToPlay("That's not a legal move. Try again: ", round, firstCard)
+
         self.hand.sortCards()
-        return chosenCard
+        return self.hand.playCard(cardIndex)
 
     def _queryForCard(self, prompt):
         '''
@@ -39,17 +57,15 @@ class Player:
         Returns the card object that was selected
         '''
         if self.isHuman:
-            cardToPlay = raw_input("{0}, {1}".format(self.name, prompt))
             try:
+                cardToPlay = raw_input("{0}, {1}".format(self.name, prompt))
                 cardIndex = int(cardToPlay) - 1
-                if cardIndex >= len(self.hand) or cardIndex < 0:
-                    raise ValueError("Out of bounds card index.")
+                # If out of bounds, ask again
+                if not self._isSelectionInBounds(cardIndex):
+                    return self._queryForCard("that wasn't a valid choice. Try again: ")
+                return cardIndex
             except ValueError as err:
-                print "That's not a valid item in your hand. Try again:"
-                return self.queryCardToPlay()
-            return self.hand.playCard(cardIndex)
+                return self._queryForCard("that's not even a number. Try again: ")
         else:
-            '''
-            Bots play a random card
-            '''
-            return self.hand.playCard(randint(0, len(self.hand) -1 ))
+            # TODO: break this out into its own method
+            return randint(0, len(self.hand) - 1)

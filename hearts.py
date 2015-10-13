@@ -1,7 +1,14 @@
-import player, card, deck, hand, round, trick
+import player
+import card
+import deck
+import hand
+import round
+import trick
+
 
 class HeartsGame:
     '''A class used to manage the players, cards, and points within the game'''
+
     def __init__(self):
         self.deck = deck.Deck()
         self.players = []
@@ -11,7 +18,7 @@ class HeartsGame:
         self.maxPoints = 100
         self.discard_pile = hand.Hand()
 
-        #Start the game
+        # Start the game
         self._play()
 
     def _play(self):
@@ -46,19 +53,21 @@ class HeartsGame:
             self.deck.dealHands(self.players)
             self.passCards()
 
-            #There are 13 tricks in a hand
+            # There are 13 tricks in a hand
             for i in range(13):
                 # Empty the hand at the beginning of the round
                 current_trick = trick.Trick()
                 self.discard_pile.empty()
                 for player in self.players:
-                    print "It is now {0}'s turn:\n{1}".format(player, player.hand)
-                    chosenCard = player.queryCardToPlay(self.round, current_trick.start_card)
+                    print player.hand
+                    prompt = "It is your turn -- choose a card to play: "
+                    chosenCard = player.queryCardToPlay(
+                        prompt, self.round, current_trick.start_card)
                     current_trick.add(player, chosenCard)
-                #Score the trick
+                # Score the trick
                 current_trick.score()
                 print current_trick
-                #Add the played cards to the discard pile
+                # Add the played cards to the discard pile
                 self.discard_pile.addCards(current_trick.card_list())
             self.round.newRound()
         # Determine Winner
@@ -80,7 +89,8 @@ class HeartsGame:
     def _addHumanPlayers(self):
         '''Adds each human player into the game'''
         for index in range(self.numHumanPlayers):
-            playerName = raw_input("Enter a name for player {0}: ".format(index))
+            playerName = raw_input(
+                "Enter a name for player {0}: ".format(index))
             self._addPlayer(playerName, True)
 
     def _addBotPlayers(self):
@@ -97,25 +107,26 @@ class HeartsGame:
         '''A helper function used to add a bot or human player to the list of players'''
         newPlayer = player.Player(name, isHuman)
 
-        #The following logic will suffix names with _#X if the name is already in use
+        # The following logic will suffix names with _#X if the name is already
+        # in use
         count = 0
         while newPlayer.name in (otherPlayer.name for otherPlayer in self.players):
             count += 1
-            newPlayer.name = "{0}_#{1}".format(name,count)
+            newPlayer.name = "{0}_#{1}".format(name, count)
         if count != 0:
             print "The name '{0}' has already been taken, so you will be" \
-            "known as '{1}' instead".format(name, newPlayer.name)
+                "known as '{1}' instead".format(name, newPlayer.name)
 
         self.players.append(newPlayer)
         print "{0} joined the game.".format(newPlayer.name)
 
     def passCards(self):
-        #If we are not holding cards, return
+        # If we are not holding cards, return
         round_count = self.round.count
         if (round_count % 4) == 3:
             return
 
-        #pick 3 cards to give up
+        # pick 3 cards to give up
         for player in self.players:
             for i in range(3):
                 print player.hand
@@ -123,22 +134,22 @@ class HeartsGame:
 
         for player in self.players:
             i = self.players.index(player)
-            if (round_count % 4) == 0: #Passing left
-                for card in self.players[(i+1)%4].passedCards:
+            if (round_count % 4) == 0:  # Passing left
+                for card in self.players[(i + 1) % 4].passedCards:
                     player.hand.addCard(card)
                 player.hand.sortCards()
 
-            elif (round_count %4) == 1: #Passing right
-                for card in self.players[(i+3)%4].passedCards:
+            elif (round_count % 4) == 1:  # Passing right
+                for card in self.players[(i + 3) % 4].passedCards:
                     player.hand.addCard(card)
                 player.hand.sortCards()
 
-            elif (round_count %4) == 2: #Passing Across
-                for card in self.players[(i+2)%4].passedCards:
+            elif (round_count % 4) == 2:  # Passing Across
+                for card in self.players[(i + 2) % 4].passedCards:
                     player.hand.addCard(card)
                 player.hand.sortCards()
 
-        #Clear the passed cards
+        # Clear the passed cards
         for player in self.players:
             player.passedCards = []
 

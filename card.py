@@ -12,7 +12,7 @@ class Card:
         self.suit = suit
         self.value = value
         self.owner = ""
-        self.weight = self._getWeight()
+        self.weight = self.getWeight()
         self.loc = index
         self.template = ["${color}┌─────┐", "${color}│${spacing}${val}   │",
         "${color}│  ${suit}  │","${color}│   ${val}${spacing}│", "${color}└─────┘", "${color}${loc}\033[0m"]
@@ -46,7 +46,7 @@ class Card:
             result.append(Template(line).substitute(keys))
         return result
 
-    def _getWeight(self):
+    def getWeight(self):
         '''
         getWeight will determine the value of the card.
         It is used for determining which player wins the hand
@@ -82,4 +82,4 @@ class Card:
         #the suitOrder dictionary is needed to ensure that cards are suited by
         #suit first, and rank second.
         suitOrder = {"♦":100, "♣":200, "♥":300, "♠":400}
-        return (suitOrder.get(self.suit) + self._getWeight()) < (suitOrder.get(other.suit) + other._getWeight())
+        return (suitOrder.get(self.suit) + self.getWeight()) < (suitOrder.get(other.suit) + other.getWeight())

@@ -1,7 +1,10 @@
+# -*- coding: utf-8 -*-
 import card
+
 
 class Hand:
     '''A class to contain the set of cards a player has available'''
+
     def __init__(self):
         self.cards = []
 
@@ -28,6 +31,9 @@ class Hand:
         except ValueError as err:
             print str(err)
 
+    def __getitem__(self, index):
+        return self.cards[index]
+
     def sortCards(self):
         '''Sorts all of the cards in the hand'''
         self.cards.sort()
@@ -37,39 +43,40 @@ class Hand:
     def isLegal(self, chosenCard, round, firstCard):
         if firstCard is None:
             if round.firstTrick:
-                return True # TODO: change to only return True on 2 of clubs
+                return True  # TODO: change to only return True on 2 of clubs
             if round.heartsBroken:
                 return True
-            elif chosenCard.suit is not '''heart''':
+            elif chosenCard.suit != '♥':
                 return True
             return False
         if round.firstTrick:
-            if chosenCard.suit is '''club''':
+            if chosenCard.suit == '♣':
                 return True
-            if not self._hasSuit('''clubs'''):
-                if (chosenCard.suit is not '''heart''') or not (chosenCard.suit is '''spade''' and chosenCard.value is '''Queen'''):
+            if not self._hasSuit('♣'):
+                if (chosenCard.suit != '♥') or not (chosenCard.suit == '♠' and chosenCard.value == 'Q'):
                     return True
                 return False
-        if chosenCard.suit is firstCard.suit:
+        if chosenCard.suit == firstCard.suit:
             return True
-        if not self._hasSuit(firstCard.suit)
+        if not self._hasSuit(firstCard.suit):
             return True
         return False
 
     def _hasSuit(self, suit):
         for card in self.cards:
-            if card.suit is suit:
+            if card.suit == suit:
                 return True
         return False
 
     def __str__(self):
-        #Please find it within yourselves to forgive me for the following
+        # Please find it within yourselves to forgive me for the following
         self.sortCards()
-        #Split the cards into a list of 5 elements (one for each line of the card).
-        #Each element will contain a tuple consisting of
-        #X elements, where X is the # of cards in the hand
+        # Split the cards into a list of 5 elements (one for each line of the card).
+        # Each element will contain a tuple consisting of
+        # X elements, where X is the # of cards in the hand
         zipped = zip(*[card.templatedParts() for card in self.cards])
 
-        #Now, we convert each element of 'zipped' into a string, and join them by newlines
-        result = "\n".join("".join(map(str,l)) for l in zipped)
+        # Now, we convert each element of 'zipped' into a string, and join them
+        # by newlines
+        result = "\n".join("".join(map(str, l)) for l in zipped)
         return result

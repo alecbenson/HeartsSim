@@ -23,7 +23,7 @@ class Trick:
         for player, card in self.played_cards.iteritems():
             trick_points += card._getPoints()
             if card.suit == self.start_card.suit:
-                if card._getWeight() >= winning_card._getWeight():
+                if card.getWeight() >= winning_card.getWeight():
                     winning_player = player
                     winning_card = card
 
