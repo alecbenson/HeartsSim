@@ -36,14 +36,22 @@ class HeartsGame:
     def _startGame(self):
         '''Starts the turn cycle'''
         self.deck.dealHands(self.players)
-        while True:
-            #Empty the hand at the beginning of the round
+        while self.round < 13: # while not gameover()
+            # Pass Cards
+            # Begin loop: do 13 times (until player hands are empty)
+            
+            # Empty the hand at the beginning of the round
             self.playedCards.empty()
             for player in self.players:
                 print "It is now {0}'s turn:\n{1}".format(player, player.hand)
                 chosenCard = player.queryCardToPlay()
                 self.playedCards.addCard(chosenCard)
                 print "The following cards have been played:\n{0}".format(self.playedCards)
+            # score trick
+            # set turn order
+            # End loop
+            self.round += 1
+        # Determine Winner
 
     def _playerCount(self):
         '''Returns an integer representing the number of players in the game'''
