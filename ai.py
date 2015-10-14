@@ -10,6 +10,7 @@ class AI:
         self.complexity = complexity
 
     def suggest_move(self, round, trick, player):
+        ''' A dispatcher function that will play the AI at the appropriate level '''
         if self.complexity == 0:
             return self._suggest_0(round, trick, player)
         elif self.complexity == 1:
@@ -26,20 +27,30 @@ class AI:
         choices = {}
         for choice in player.hand:
             val = self._heuristic(round, trick, player, choice)
-            choices[val] = choice
 
-        best = min(choices.keys(), key=float)
-        return choices[best]
+            # Don't consider illegal moves
+            if val == None:
+                continue
+
+            weight_factor = (1 - (choice.getWeight() / 14.0))
+            point_factor = choice._getPoints() / 13.0
+            choices[choice] = (point_factor + weight_factor) / val
+
+        return max(choices, key=choices.get)
 
     def _heuristic(self, round, trick, player, card_choice):
+        ''' Used by bots to decide which card to play (card with min(heuristic) ) '''
         if not trick.isLegalMove(player, card_choice):
-            return 100.0
+            return None
 
         current_trick_value = trick.value()
+        current_card_value = (card_choice._getPoints() / 13.0)
         chance_to_win = self.chance_of_winning(round, trick, card_choice)
-        return chance_to_win
+        score = max(0.01, chance_to_win)
+        return score
 
     def cards_that_can_beat(self, round, card_choice):
+        ''' Returns the number of cards that are still in play that can beat card_choice in a trick '''
         count = 0
         for card in round.cards_in_play:
             if card.suit == card_choice.suit:
@@ -48,7 +59,7 @@ class AI:
         return count
 
     def chance_of_winning(self, round, trick, card_choice):
-        ''' Returns the number of cards in play that could win the trick '''
+        ''' Returns the probability of winning the trick after playing card_choice '''
         winning_cards = 0
         current_winning_card = trick.current_winning_card()
 

@@ -88,3 +88,8 @@ class Card:
         # suit first, and rank second.
         suitOrder = {"♦": 100, "♣": 200, "♥": 300, "♠": 400}
         return (suitOrder.get(self.suit) + self.getWeight()) < (suitOrder.get(other.suit) + other.getWeight())
+
+    def __hash__(self):
+        suitOrder = {"♦": 100, "♣": 200, "♥": 300, "♠": 400}
+
+        return hash(suitOrder[self.suit] + self.getWeight())
