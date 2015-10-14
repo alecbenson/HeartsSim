@@ -53,8 +53,15 @@ class HeartsGame:
             self.deck.dealHands(self.players)
             self.passCards()
             self.round.newRound()
+            startPlayer = self._findTwo()
+            self.round.trick.orderPlayers(self.players, startPlayer)
             self.round.playTricks(self.players)
         self._score_card()
+
+    def _findTwo(self):
+        for player in self.players:
+            if card.Card('''club''', 2) in player.hand:
+                return player
 
     def _playerCount(self):
         '''Returns an integer representing the number of players in the game'''

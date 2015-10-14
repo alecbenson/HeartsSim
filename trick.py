@@ -96,10 +96,11 @@ class Trick:
         result = "\n".join("".join(map(str, l)) for l in zipped)
         return result
 
-    def orderPlayers(self, players):
+    def orderPlayers(self, players, startPlayer=None):
         order = []
-        winner = self.score()
-        nextStartPlayer = players.index(winner)
+        if startPlayer == None:
+            startPlayer = self.score()
+        nextStartPlayer = players.index(startPlayer)
         for i in range(len(players)):
             order.append(players[(nextStartPlayer + i) % 4])
         return order
