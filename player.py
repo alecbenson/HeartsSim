@@ -1,17 +1,9 @@
 # -*- coding: utf-8 -*-
 import hand
-from random import randint
+import random
 
 
-class Player:
-    '''A class that represents a card player'''
-
-    def __init__(self, name, isHuman):
-        self.name = name
-        self.hand = hand.Hand()
-        self.score = 0
-        self.passedCards = []
-        self.isHuman = isHuman
+class Player_Base:
 
     def __str__(self):
         return self.name
@@ -23,6 +15,32 @@ class Player:
     def addPoints(self, points):
         '''Adds X points to the player's score'''
         self.score += points
+
+
+class Bot(Player_Base):
+
+    def __init__(self, name):
+        self.name = name
+        self.hand = hand.Hand()
+        self.score = 0
+        self.passedCards = []
+
+    def queryCardToPass(self):
+        choice = random.choice(self.hand)
+        return self.hand.playCard(choice)
+
+    def queryCardToPlay(self, prompt, firstCard):
+        return random.choice(self.hand)
+
+
+class Human(Player_Base):
+    '''A class that represents a card player'''
+
+    def __init__(self, name):
+        self.name = name
+        self.hand = hand.Hand()
+        self.score = 0
+        self.passedCards = []
 
     def _isSelectionInBounds(self, index):
         '''
@@ -41,19 +59,10 @@ class Player:
             "select a card that you would like to pass: ")
         return self.hand.playCard(cardIndex)
 
-    def queryCardToPlay(self, prompt, round, firstCard):
+    def queryCardToPlay(self, prompt, firstCard):
         cardIndex = self._queryForCard(prompt)
         chosenCard = self.hand[cardIndex]
-
-        if not self.hand.isLegal(chosenCard, round, firstCard):
-            return self.queryCardToPlay("That's not a legal move. Try again: ", round, firstCard)
-
-        # Break hearts if the heart is a legal move and hearts is not broken
-        if chosenCard.suit == "♥" and round.heartsBroken == False:
-            round.breakHearts()
-
-        print "{0} played:\n{1}".format(self.name, chosenCard)
-        return self.hand.playCard(cardIndex)
+        return chosenCard
 
     def _queryForCard(self, prompt):
         '''
@@ -61,20 +70,15 @@ class Player:
         The prompt parameter is used to specify a message to display to the user.
         Returns the card object that was selected
         '''
-        if self.isHuman:
-            try:
-                #Show the player his/her hand
-                print self.hand
+        print self.hand
 
-                cardToPlay = raw_input("{0}, {1}".format(self.name, prompt))
-                cardIndex = int(cardToPlay) - 1
+        try:
+            cardToPlay = raw_input("{0}, {1}".format(self.name, prompt))
+            cardIndex = int(cardToPlay) - 1
+        except ValueError as err:
+            return self._queryForCard("that's not even a number. Try again: ")
 
-                # If out of bounds, ask again
-                if not self._isSelectionInBounds(cardIndex):
-                    return self._queryForCard("that wasn't a valid choice. Try again: ")
-                return cardIndex
-            except ValueError as err:
-                return self._queryForCard("that's not even a number. Try again: ")
-        else:
-            # TODO: break this out into its own method
-            return randint(0, len(self.hand) - 1)
+        # If out of bounds, ask again
+        if not self._isSelectionInBounds(cardIndex):
+            return self._queryForCard("that wasn't a valid choice. Try again: ")
+        return cardIndex

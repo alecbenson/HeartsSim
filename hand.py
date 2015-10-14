@@ -27,9 +27,12 @@ class Hand:
     def playCard(self, card):
         ''' Removes the card from the hand and puts it in play.'''
         try:
+            #If an index is passed
             return self.cards.pop(card)
-        except ValueError as err:
-            print str(err)
+        except AttributeError as err:
+            #If a card objet is passed...
+            self.cards.remove(card)
+            return card
 
     def __getitem__(self, index):
         return self.cards[index]
@@ -40,31 +43,7 @@ class Hand:
         for i in range(len(self.cards)):
             (self.cards[i]).loc = i + 1
 
-    def isLegal(self, chosenCard, round, firstCard):
-        if firstCard is None:
-            if round.firstTrick:
-                print "You won't be able to do this later"
-                return True  # TODO: change to only return True on 2 of clubs
-            if round.heartsBroken:
-                return True
-            elif chosenCard.suit != '♥':
-                return True
-            #Hearts not broken, but heart card is picked
-            return False
-        if round.firstTrick:
-            if chosenCard.suit == '♣':
-                return True
-            if not self._hasSuit('♣'):
-                if (chosenCard.suit != '♥') or not (chosenCard.suit == '♠' and chosenCard.value == 'Q'):
-                    return True
-                return False
-        if chosenCard.suit == firstCard.suit:
-            return True
-        if not self._hasSuit(firstCard.suit):
-            return True
-        return False
-
-    def _hasSuit(self, suit):
+    def hasSuit(self, suit):
         for card in self.cards:
             if card.suit == suit:
                 return True

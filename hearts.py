@@ -52,25 +52,8 @@ class HeartsGame:
             self.deck = deck.Deck()
             self.deck.dealHands(self.players)
             self.passCards()
-
-            # There are 13 tricks in a hand
-            for i in range(13):
-                # Empty the hand at the beginning of the round
-                current_trick = trick.Trick()
-                self.discard_pile.empty()
-                for player in self.players:
-                    prompt = "It is your turn -- choose a card to play: "
-                    chosenCard = player.queryCardToPlay(
-                        prompt, self.round, current_trick.start_card)
-                    current_trick.add(player, chosenCard)
-                # Score the trick
-                self.players = current_trick.orderPlayers(self.players)
-                print current_trick
-                # Add the played cards to the discard pile
-                self.discard_pile.addCards(current_trick.card_list())
-                self.round.firstTrick = False
             self.round.newRound()
-        # Determine Winner
+            self.round.playTricks(self.players)
         self._score_card()
 
     def _playerCount(self):
@@ -91,7 +74,8 @@ class HeartsGame:
         for index in range(self.numHumanPlayers):
             playerName = raw_input(
                 "Enter a name for player {0}: ".format(index))
-            self._addPlayer(playerName, True)
+            newPlayer = player.Human(playerName)
+            self._addPlayer(newPlayer)
 
     def _addBotPlayers(self):
         '''Adds additional bot players into the game'''
@@ -100,25 +84,19 @@ class HeartsGame:
 
         botsToAdd = self.maxPlayers - self.numHumanPlayers
         for index in range(botsToAdd):
-            botName = "Bot_#{0}".format(index)
-            self._addPlayer(botName, False)
+            newBot = player.Bot("Bot")
+            self._addPlayer(newBot)
 
-    def _addPlayer(self, name, isHuman):
+    def _addPlayer(self, player):
         '''A helper function used to add a bot or human player to the list of players'''
-        newPlayer = player.Player(name, isHuman)
-
-        # The following logic will suffix names with _#X if the name is already
-        # in use
         count = 0
-        while newPlayer.name in (otherPlayer.name for otherPlayer in self.players):
+        startName = player.name
+        while player.name in (otherPlayer.name for otherPlayer in self.players):
             count += 1
-            newPlayer.name = "{0}_#{1}".format(name, count)
-        if count != 0:
-            print "The name '{0}' has already been taken, so you will be" \
-                "known as '{1}' instead".format(name, newPlayer.name)
+            player.name = "{0}_#{1}".format(startName, count)
 
-        self.players.append(newPlayer)
-        print "{0} joined the game.".format(newPlayer.name)
+        print "{0} joined the game.".format(player.name)
+        self.players.append(player)
 
     def passCards(self):
         # If we are not holding cards, return
@@ -151,6 +129,7 @@ class HeartsGame:
         # Clear the passed cards
         for player in self.players:
             player.passedCards = []
+
 
 if __name__ == '__main__':
     game = HeartsGame()
