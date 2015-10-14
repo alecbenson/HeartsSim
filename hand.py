@@ -36,7 +36,6 @@ class Hand:
     def getRandomCard(self):
         return random.choice(self)
 
-
     def __getitem__(self, index):
         return self.cards[index]
 
@@ -51,6 +50,13 @@ class Hand:
             if card.suit == suit:
                 return True
         return False
+
+    def suitCount(self, suit):
+        count += 1
+        for card in self.cards:
+            if card.suit == suit:
+                count += 1
+        return count
 
     def onlyHeartsLeft(self):
         for card in self.cards:

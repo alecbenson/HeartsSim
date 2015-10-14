@@ -20,16 +20,17 @@ class Player_Base:
 
 class Bot(Player_Base):
 
-    def __init__(self, name):
+    def __init__(self, name, complexity):
         self.name = name
         self.hand = hand.Hand()
         self.score = 0
         self.passedCards = []
-        self.intelligence = ai.AI(1)
+        self.intelligence = ai.AI(complexity)
 
     def queryCardToPass(self):
-        choice = self.hand.getRandomCard()
-        return self.hand.play_card(choice)
+        suggestion = self.intelligence.suggest_pass(self)
+        return self.hand.play_card(suggestion)
+
 
     def queryCardToPlay(self, prompt, round, trick):
         print "{0} is now making a move. {0}'s hand contains:".format(self.name)
@@ -40,7 +41,7 @@ class Bot(Player_Base):
 class Human(Player_Base):
     '''A class that represents a card player'''
 
-    def __init__(self, name):
+    def __init__(self, name, complexity = 0):
         self.name = name
         self.hand = hand.Hand()
         self.score = 0

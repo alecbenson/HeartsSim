@@ -84,7 +84,7 @@ class HeartsGame:
 
         botsToAdd = self.maxPlayers - self.numHumanPlayers
         for index in range(botsToAdd):
-            newBot = player.Bot("Bot")
+            newBot = player.Bot("Bot", 1)
             self._addPlayer(newBot)
 
     def _addPlayer(self, player):

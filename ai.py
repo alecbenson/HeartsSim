@@ -20,6 +20,16 @@ class AI:
         else:
             print "Invalid complexity provided"
 
+    def suggest_pass(self, player):
+        suitOrder = {"♣": 0, "♦": 6, "♥": 12, "♠": 15}
+        choices = {}
+        for card in player.hand:
+            value = suitOrder.get(card.suit) + card.getWeight()
+            choices[card] = value
+        return max(choices, key=choices.get)
+
+
+
     def _suggest_0(self, round, trick, player):
         return player.hand.getRandomCard()
 
