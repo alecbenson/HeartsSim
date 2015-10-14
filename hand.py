@@ -27,10 +27,10 @@ class Hand:
     def playCard(self, card):
         ''' Removes the card from the hand and puts it in play.'''
         try:
-            #If an index is passed
+            # If an index is passed
             return self.cards.pop(card)
         except AttributeError as err:
-            #If a card objet is passed...
+            # If a card objet is passed...
             self.cards.remove(card)
             return card
 
@@ -48,6 +48,12 @@ class Hand:
             if card.suit == suit:
                 return True
         return False
+
+    def onlyHeartsLeft(self):
+        for card in self.cards:
+            if card.suit != '♥':
+                return False
+        return True
 
     def __str__(self):
         # Please find it within yourselves to forgive me for the following

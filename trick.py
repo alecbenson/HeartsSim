@@ -94,7 +94,8 @@ class Trick:
                 return True
             elif chosenCard.suit != '♥':
                 return True
-            # Hearts not broken, but heart card is picked
+            elif player.hand.onlyHeartsLeft():
+                return True
             return False
         if self.round.firstTrick:
             if chosenCard.suit == '♣':
