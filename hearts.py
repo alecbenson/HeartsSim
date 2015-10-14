@@ -113,17 +113,17 @@ class HeartsGame:
             i = self.players.index(player)
             if (round_count % 4) == 0:  # Passing left
                 for card in self.players[(i + 1) % 4].passedCards:
-                    player.hand.addCard(card)
+                    player.hand.add_card(card)
                 player.hand.sortCards()
 
             elif (round_count % 4) == 1:  # Passing right
                 for card in self.players[(i + 3) % 4].passedCards:
-                    player.hand.addCard(card)
+                    player.hand.add_card(card)
                 player.hand.sortCards()
 
             elif (round_count % 4) == 2:  # Passing Across
                 for card in self.players[(i + 2) % 4].passedCards:
-                    player.hand.addCard(card)
+                    player.hand.add_card(card)
                 player.hand.sortCards()
 
         # Clear the passed cards

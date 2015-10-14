@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import card
+import random
 
 
 class Hand:
@@ -12,11 +13,11 @@ class Hand:
         '''Returns the number of cards in the hand'''
         return len(self.cards)
 
-    def addCards(self, cards):
+    def add_cards(self, cards):
         '''Puts the given card in the hand'''
         self.cards.extend(cards)
 
-    def addCard(self, card):
+    def add_card(self, card):
         '''Puts the given card in the hand'''
         self.cards.append(card)
 
@@ -24,15 +25,17 @@ class Hand:
         '''Empties the hand'''
         self.cards = []
 
-    def playCard(self, card):
+    def play_card(self, choice):
         ''' Removes the card from the hand and puts it in play.'''
         try:
-            # If an index is passed
-            return self.cards.pop(card)
-        except AttributeError as err:
-            # If a card objet is passed...
-            self.cards.remove(card)
-            return card
+            self.cards.remove(choice)
+            return choice
+        except TypeError as err:
+            print "Invalid type provided"
+
+    def getRandomCard(self):
+        return random.choice(self)
+
 
     def __getitem__(self, index):
         return self.cards[index]

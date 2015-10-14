@@ -1,13 +1,15 @@
-#Printing cards uses use non ascii characters, we need to set encoding
+# Printing cards uses use non ascii characters, we need to set encoding
 # -*- coding: utf-8 -*-
 from string import Template
 import hearts
 import sys
 from functools import total_ordering
 
+
 @total_ordering
 class Card:
     '''A simple class that represents a standard playing card'''
+
     def __init__(self, suit, value, index=0):
         self.suit = suit
         self.value = value
@@ -15,7 +17,7 @@ class Card:
         self.weight = self.getWeight()
         self.loc = index
         self.template = ["${color}┌─────┐", "${color}│${spacing}${val}   │",
-        "${color}│  ${suit}  │","${color}│   ${val}${spacing}│", "${color}└─────┘", "${color}${loc}\033[0m"]
+                         "${color}│  ${suit}  │", "${color}│   ${val}${spacing}│", "${color}└─────┘", "${color}${loc}\033[0m"]
 
     def __str__(self):
         '''
@@ -35,12 +37,13 @@ class Card:
         to self.template except that the template parameters are substituted
         '''
         result = []
-        spaces = " "*(2-len(self.value))
+        spaces = " " * (2 - len(self.value))
         if self.loc is 1:
             str_index = '{: >4}'.format(self.loc)
         else:
             str_index = '{: >7}'.format(self.loc)
-        keys = dict(color = self._getColor(), val=self.value, suit=self.suit, spacing=spaces, loc = str_index)
+        keys = dict(color=self._getColor(), val=self.value,
+                    suit=self.suit, spacing=spaces, loc=str_index)
 
         for line in self.template:
             result.append(Template(line).substitute(keys))
@@ -56,7 +59,7 @@ class Card:
             return int(self.value)
         except ValueError:
             try:
-                return {"J":11, "Q":12, "K":13, "A":14,}.get(self.value)
+                return {"J": 11, "Q": 12, "K": 13, "A": 14, }.get(self.value)
             except KeyError as err:
                 print str(err)
                 sys.exit(1)
@@ -72,14 +75,16 @@ class Card:
 
     def __eq__(self, other):
         '''Required for total_ordering'''
-        return False
+        if other == None:
+            return False
+        return self.suit == other.suit and self.value == other.value
 
     def __lt__(self, other):
         '''
         This function may be replaced with __le__, __gt__, or __ge__
         but one of those is required for total_ordering
         '''
-        #the suitOrder dictionary is needed to ensure that cards are suited by
-        #suit first, and rank second.
-        suitOrder = {"♦":100, "♣":200, "♥":300, "♠":400}
+        # the suitOrder dictionary is needed to ensure that cards are suited by
+        # suit first, and rank second.
+        suitOrder = {"♦": 100, "♣": 200, "♥": 300, "♠": 400}
         return (suitOrder.get(self.suit) + self.getWeight()) < (suitOrder.get(other.suit) + other.getWeight())

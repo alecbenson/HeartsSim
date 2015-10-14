@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import hand
 import random
+import ai
 
 
 class Player_Base:
@@ -24,13 +25,16 @@ class Bot(Player_Base):
         self.hand = hand.Hand()
         self.score = 0
         self.passedCards = []
+        self.intelligence = ai.AI(1)
 
     def queryCardToPass(self):
-        choice = random.choice(self.hand)
-        return self.hand.playCard(choice)
+        choice = self.hand.getRandomCard()
+        return self.hand.play_card(choice)
 
-    def queryCardToPlay(self, prompt, firstCard):
-        return random.choice(self.hand)
+    def queryCardToPlay(self, prompt, round, trick):
+        print "{0} is now making a move. {0}'s hand contains:".format(self.name)
+        print self.hand
+        return self.intelligence.suggest_move(round, trick, self)
 
 
 class Human(Player_Base):
@@ -55,13 +59,12 @@ class Human(Player_Base):
         return True
 
     def queryCardToPass(self):
-        cardIndex = self._queryForCard(
+        chosenCard = self._queryForCard(
             "select a card that you would like to pass: ")
-        return self.hand.playCard(cardIndex)
+        return self.hand.play_card(chosenCard)
 
-    def queryCardToPlay(self, prompt, firstCard):
-        cardIndex = self._queryForCard(prompt)
-        chosenCard = self.hand[cardIndex]
+    def queryCardToPlay(self, prompt, round, trick):
+        chosenCard = self._queryForCard(prompt)
         return chosenCard
 
     def _queryForCard(self, prompt):
@@ -81,4 +84,4 @@ class Human(Player_Base):
         # If out of bounds, ask again
         if not self._isSelectionInBounds(cardIndex):
             return self._queryForCard("that wasn't a valid choice. Try again: ")
-        return cardIndex
+        return self.hand[cardIndex]

@@ -12,16 +12,16 @@ class Trick:
         self.played_cards = {}
 
     def take_turns(self):
-        ''' Keys a player in the trick with the card that they played '''
+
         prompt = "It is your turn -- choose a card to play: "
         for player in self.players:
-            chosenCard = player.queryCardToPlay(prompt, self.start_card)
+            chosenCard = player.queryCardToPlay(prompt, self.round, self)
 
             # Repeat until the player makes a legal move
             while not self.isLegalMove(player, chosenCard):
                 illegal_prompt = "That's not a legal move. Try again: "
                 chosenCard = player.queryCardToPlay(
-                    illegal_prompt, self.start_card)
+                    illegal_prompt, self.round, self)
 
             self._confirm_move(player, chosenCard)
 
@@ -30,7 +30,7 @@ class Trick:
         A helper function to update the status of the trick after
         a player makes a turn
         '''
-        player.hand.playCard(chosenCard)
+        player.hand.play_card(chosenCard)
         self.played_cards[player] = chosenCard
         # Inform the round if hearts were broken or that the first trick is
         # over
@@ -42,17 +42,16 @@ class Trick:
         print "{0} played:\n{1}".format(player.name, chosenCard)
 
     def score(self):
-        ''' Returns the player that won the trick '''
+        ''' Returns the player that won the trick and awards them points '''
         if not self.played_cards:
             print "The trick is empty, there can be no winner."
             return None
 
         winning_player = None
         winning_card = self.start_card
-        trick_points = 0
+        trick_points = self.value()
 
         for player, card in self.played_cards.iteritems():
-            trick_points += card._getPoints()
             if card.suit == self.start_card.suit:
                 if card.getWeight() >= winning_card.getWeight():
                     winning_player = player
@@ -63,10 +62,29 @@ class Trick:
 
         return winning_player
 
+    def value(self):
+        trick_points = 0
+        for player, card in self.played_cards.iteritems():
+            trick_points += card._getPoints()
+        return trick_points
+
     def _trick_summary(self, winning_player, trick_points):
         ''' Prints a quick summary of the hand '''
         print "The trick is over. {0} won the trick, and received {1} points." \
             .format(winning_player.name, trick_points)
+
+    def moves_left(self):
+        return 4 - len(self.played_cards)
+
+    def current_winning_card(self):
+        if self.start_card == None:
+            return None
+        current_winner = self.start_card
+        for player, card in self.played_cards.iteritems():
+            if card.suit == current_winner.suit:
+                if card.getWeight > current_winner.getWeight:
+                    current_winner = card
+        return current_winner
 
     def card_list(self):
         ''' Returns the cards in the trick as a list '''
