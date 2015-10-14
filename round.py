@@ -40,7 +40,11 @@ class Round:
         self.discard_pile.append(chosenCard)
         self.cards_in_play.remove(chosenCard)
 
-    def playTricks(self, players):
+    def playTricks(self, players, firstPlayer):
+        # Set initial turn order
+        current_trick = trick.Trick(players, self)
+        players = current_trick.orderPlayers(players, firstPlayer)
+
         # There are 13 tricks in a hand
         for i in range(13):
             current_trick = trick.Trick(players, self)

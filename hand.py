@@ -76,3 +76,9 @@ class Hand:
         # by newlines
         result = "\n".join("".join(map(str, l)) for l in zipped)
         return result
+
+    def __contains__(self, other):
+        for card in self.cards:
+            if card == other:
+                return True
+        return False

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import player
 import card
 import deck
@@ -54,13 +56,13 @@ class HeartsGame:
             self.passCards()
             self.round.newRound()
             startPlayer = self._findTwo()
-            self.round.trick.orderPlayers(self.players, startPlayer)
-            self.round.playTricks(self.players)
+            self.round.playTricks(self.players, startPlayer)
         self._score_card()
 
     def _findTwo(self):
         for player in self.players:
-            if card.Card('''club''', 2) in player.hand:
+            print player.hand
+            if card.Card('♣', '2') in player.hand:
                 return player
 
     def _playerCount(self):

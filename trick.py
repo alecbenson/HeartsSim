@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import card
 
 class Trick:
     ''' The trick class is used to represent a single set of four turns within a game '''
@@ -108,7 +108,9 @@ class Trick:
     def isLegalMove(self, player, chosenCard):
         if self.start_card is None:
             if self.round.firstTrick:
-                return True  # TODO: change to only return True on 2 of clubs
+                if chosenCard == card.Card('♣', '2'):
+                    return True
+                return False
             if self.round.heartsBroken:
                 return True
             elif chosenCard.suit != '♥':
