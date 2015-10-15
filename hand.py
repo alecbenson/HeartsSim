@@ -52,7 +52,7 @@ class Hand:
         return False
 
     def suitCount(self, suit):
-        count += 1
+        count = 0
         for card in self.cards:
             if card.suit == suit:
                 count += 1

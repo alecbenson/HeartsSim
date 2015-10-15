@@ -21,7 +21,15 @@ class AI:
             print "Invalid complexity provided"
 
     def suggest_pass(self, player):
-        suitOrder = {"♣": 0, "♦": 6, "♥": 12, "♠": 15}
+        passes_left = len(player.hand) - 10
+        suitOrder = {"♣": 1, "♦": 7, "♥": 13, "♠": 16}
+
+        #Increase the passing priority of a suit if it can be drained easily
+        for k, v in suitOrder.iteritems():
+            count = player.hand.suitCount(k)
+            if count <= 3:
+                suitOrder[k] += (4 * passes_left * (3 - count))
+
         choices = {}
         for card in player.hand:
             value = suitOrder.get(card.suit) + card.getWeight()

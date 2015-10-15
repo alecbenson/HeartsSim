@@ -58,17 +58,12 @@ class HeartsGame:
             self.round.newRound()
             startPlayer = self._findTwo()
             self.round.playTricks(self.players, startPlayer)
-        self._score_card()
+            self._score_card()
 
     def _findTwo(self):
         for player in self.players:
-            print player.hand
             if card.Card('♣', '2') in player.hand:
                 return player
-
-    def _playerCount(self):
-        '''Returns an integer representing the number of players in the game'''
-        return len(players)
 
     def _score_card(self):
         ''' Prints a nice, readable scorecard '''
@@ -78,6 +73,10 @@ class HeartsGame:
         for player in self.players:
             print "{0}: {1}".format(player.name, player.score)
             print table_row
+
+    def _playerCount(self):
+        '''Returns an integer representing the number of players in the game'''
+        return len(players)
 
     def _addHumanPlayers(self):
         '''Adds each human player into the game'''
@@ -93,7 +92,7 @@ class HeartsGame:
             return
 
         botsToAdd = self.maxPlayers - self.numHumanPlayers
-        for index in range(botsToAdd ):
+        for index in range(botsToAdd):
             newBot = player.Bot("Bot", 1)
             self._addPlayer(newBot)
 
@@ -117,7 +116,8 @@ class HeartsGame:
         # pick 3 cards to give up
         for player in self.players:
             for i in range(3):
-                player.passedCards.append(player.queryCardToPass())
+                card_to_pass = player.queryCardToPass()
+                player.passedCards.append(card_to_pass)
 
         for player in self.players:
             i = self.players.index(player)
