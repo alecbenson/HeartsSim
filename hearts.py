@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import player
+import random
 import card
 import deck
 import hand
@@ -92,9 +93,7 @@ class HeartsGame:
             return
 
         botsToAdd = self.maxPlayers - self.numHumanPlayers
-        newBot = player.Bot("Bot", 0)
-        self._addPlayer(newBot)
-        for index in range(botsToAdd - 1):
+        for index in range(botsToAdd ):
             newBot = player.Bot("Bot", 1)
             self._addPlayer(newBot)
 

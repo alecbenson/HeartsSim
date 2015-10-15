@@ -33,8 +33,6 @@ class Bot(Player_Base):
 
 
     def queryCardToPlay(self, prompt, round, trick):
-        print "{0} is now making a move. {0}'s hand contains:".format(self.name)
-        print self.hand
         return self.intelligence.suggest_move(round, trick, self)
 
 
@@ -60,11 +58,13 @@ class Human(Player_Base):
         return True
 
     def queryCardToPass(self):
+        print self.hand
         chosenCard = self._queryForCard(
             "select a card that you would like to pass: ")
         return self.hand.play_card(chosenCard)
 
     def queryCardToPlay(self, prompt, round, trick):
+        print self.hand
         chosenCard = self._queryForCard(prompt)
         return chosenCard
 
@@ -74,8 +74,6 @@ class Human(Player_Base):
         The prompt parameter is used to specify a message to display to the user.
         Returns the card object that was selected
         '''
-        print self.hand
-
         try:
             cardToPlay = raw_input("{0}, {1}".format(self.name, prompt))
             cardIndex = int(cardToPlay) - 1

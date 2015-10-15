@@ -2,6 +2,7 @@
 import trick
 import deck
 
+
 class Round:
 
     def __init__(self):
@@ -36,9 +37,17 @@ class Round:
         # When update is called, we know the first trick is over
         self.firstTrick = False
 
-        #Add to the discard and cards in play pile
+        # Add to the discard and cards in play pile
         self.discard_pile.append(chosenCard)
         self.cards_in_play.remove(chosenCard)
+
+    def new_trick_text(self):
+        bold = '\033[1m'
+        underline = '\033[4m'
+        dashes = "\t" * 3
+        text = "New Trick"
+        reset = '\033[0m'
+        print "{0}{1}{2}{3}{2}{4}".format(bold, underline, dashes, text, reset)
 
     def playTricks(self, players, firstPlayer):
         # Set initial turn order
@@ -47,6 +56,7 @@ class Round:
 
         # There are 13 tricks in a hand
         for i in range(13):
+            self.new_trick_text()
             current_trick = trick.Trick(players, self)
             current_trick.take_turns()
 

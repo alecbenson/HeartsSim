@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import card
 
+
 class Trick:
     ''' The trick class is used to represent a single set of four turns within a game '''
 
@@ -12,7 +13,6 @@ class Trick:
         self.played_cards = {}
 
     def take_turns(self):
-
         prompt = "It is your turn -- choose a card to play: "
         for player in self.players:
             chosenCard = player.queryCardToPlay(prompt, self.round, self)
