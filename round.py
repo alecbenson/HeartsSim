@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import trick
 import deck
+import card
 
 
 class Round:
@@ -30,6 +31,11 @@ class Round:
     def breakHearts(self):
         self.heartsBroken = True
 
+    def _findTwo(self, players):
+        for player in players:
+            if card.Card('♣', '2') in player.hand:
+                return player
+
     def update(self, chosenCard):
         # Break hearts if the heart is a legal move and hearts is not broken
         if chosenCard.suit == "♥" and self.heartsBroken == False:
@@ -49,10 +55,12 @@ class Round:
         reset = '\033[0m'
         print "{0}{1}{2}{3}{2}{4}".format(bold, underline, dashes, text, reset)
 
-    def playTricks(self, players, firstPlayer):
+    def playTricks(self, players):
         # Set initial turn order
         current_trick = trick.Trick(players, self)
-        players = current_trick.orderPlayers(players, firstPlayer)
+        startPlayer = self._findTwo(players)
+        players = current_trick.orderPlayers(players, startPlayer)
+        self.passCards(players)
 
         # There are 13 tricks in a hand
         for i in range(13):
@@ -62,3 +70,36 @@ class Round:
 
             players = current_trick.orderPlayers(players)
             print current_trick
+
+    def passCards(self, players):
+        # If we are not holding cards, return
+        round_count = self.count
+        if (round_count % 4) == 3:
+            return
+
+        # pick 3 cards to give up
+        for player in players:
+            for i in range(3):
+                card_to_pass = player.queryCardToPass()
+                player.passedCards.append(card_to_pass)
+
+        for player in players:
+            i = players.index(player)
+            if (round_count % 4) == 0:  # Passing left
+                for card in players[(i + 1) % 4].passedCards:
+                    player.hand.add_card(card)
+                player.hand.sortCards()
+
+            elif (round_count % 4) == 1:  # Passing right
+                for card in players[(i + 3) % 4].passedCards:
+                    player.hand.add_card(card)
+                player.hand.sortCards()
+
+            elif (round_count % 4) == 2:  # Passing Across
+                for card in players[(i + 2) % 4].passedCards:
+                    player.hand.add_card(card)
+                player.hand.sortCards()
+
+        # Clear the passed cards
+        for player in players:
+            player.passedCards = []

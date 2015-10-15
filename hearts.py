@@ -54,16 +54,9 @@ class HeartsGame:
         while self._isGameOver() == False:
             self.deck = deck.Deck()
             self.deck.dealHands(self.players)
-            self.passCards()
             self.round.newRound()
-            startPlayer = self._findTwo()
-            self.round.playTricks(self.players, startPlayer)
+            self.round.playTricks(self.players)
             self._score_card()
-
-    def _findTwo(self):
-        for player in self.players:
-            if card.Card('♣', '2') in player.hand:
-                return player
 
     def _score_card(self):
         ''' Prints a nice, readable scorecard '''
@@ -106,40 +99,6 @@ class HeartsGame:
 
         print "{0} joined the game.".format(player.name)
         self.players.append(player)
-
-    def passCards(self):
-        # If we are not holding cards, return
-        round_count = self.round.count
-        if (round_count % 4) == 3:
-            return
-
-        # pick 3 cards to give up
-        for player in self.players:
-            for i in range(3):
-                card_to_pass = player.queryCardToPass()
-                player.passedCards.append(card_to_pass)
-
-        for player in self.players:
-            i = self.players.index(player)
-            if (round_count % 4) == 0:  # Passing left
-                for card in self.players[(i + 1) % 4].passedCards:
-                    player.hand.add_card(card)
-                player.hand.sortCards()
-
-            elif (round_count % 4) == 1:  # Passing right
-                for card in self.players[(i + 3) % 4].passedCards:
-                    player.hand.add_card(card)
-                player.hand.sortCards()
-
-            elif (round_count % 4) == 2:  # Passing Across
-                for card in self.players[(i + 2) % 4].passedCards:
-                    player.hand.add_card(card)
-                player.hand.sortCards()
-
-        # Clear the passed cards
-        for player in self.players:
-            player.passedCards = []
-
 
 if __name__ == '__main__':
     game = HeartsGame()

@@ -12,19 +12,28 @@ class AI:
     def suggest_move(self, round, trick, player):
         ''' A dispatcher function that will play the AI at the appropriate level '''
         if self.complexity == 0:
-            return self._suggest_0(round, trick, player)
+            return self._suggest_move_0(round, trick, player)
         elif self.complexity == 1:
-            return self._suggest_1(round, trick, player)
-        elif self.complexity == 2:
-            return self._suggest_2(round, trick, player)
+            return self._suggest_move_1(round, trick, player)
         else:
             print "Invalid complexity provided"
 
     def suggest_pass(self, player):
+        if self.complexity == 0:
+            return self._suggest_pass_0(player)
+        elif self.complexity == 1:
+            return self._suggest_pass_1(player)
+        else:
+            print "Invalid complexity provided"
+
+    def _suggest_pass_0(self, player):
+        return random.choice(player.hand)
+
+    def _suggest_pass_1(self, player):
         passes_left = len(player.hand) - 10
         suitOrder = {"♣": 1, "♦": 7, "♥": 13, "♠": 16}
 
-        #Increase the passing priority of a suit if it can be drained easily
+        # Increase the passing priority of a suit if it can be drained easily
         for k, v in suitOrder.iteritems():
             count = player.hand.suitCount(k)
             if count <= 3:
@@ -70,10 +79,10 @@ class AI:
             count -= bool(card.suit == suit)
         return count
 
-    def _suggest_0(self, round, trick, player):
+    def _suggest_move_0(self, round, trick, player):
         return player.hand.getRandomCard()
 
-    def _suggest_1(self, round, trick, player):
+    def _suggest_move_1(self, round, trick, player):
         choices = {}
         for choice in player.hand:
             val = self._heuristic(round, trick, player, choice)
