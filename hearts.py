@@ -92,7 +92,9 @@ class HeartsGame:
             return
 
         botsToAdd = self.maxPlayers - self.numHumanPlayers
-        for index in range(botsToAdd):
+        newBot = player.Bot("Bot", 0)
+        self._addPlayer(newBot)
+        for index in range(botsToAdd - 1):
             newBot = player.Bot("Bot", 1)
             self._addPlayer(newBot)
 

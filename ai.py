@@ -26,9 +26,44 @@ class AI:
         for card in player.hand:
             value = suitOrder.get(card.suit) + card.getWeight()
             choices[card] = value
+
         return max(choices, key=choices.get)
 
+    def threat(self, round, player):
+        #Probability that a point card will be played
+        pcr = self.point_cards_remaining(round, player)
+        other_cards = float(len(round.cards_in_play) - len(player.hand))
 
+        if other_cards == 0:
+            return 0
+
+        p_point_card = pcr / other_cards
+
+        #Is the queen still a threat?
+        queen_remaining = self.queen_spades_remaining(round, player)
+        hearts_remaining = round.cards_of_suit_left('♥')
+
+        percent_points_remaining = ((13 * queen_remaining) + hearts_remaining)/16.0
+        return p_point_card * percent_points_remaining
+
+    def queen_spades_remaining(self, round, player):
+        ''' Returns true if the queen of spades is in play and the player does not have it '''
+        queen_spades = card.Card('♠', 'Q')
+        if queen_spades in player.hand:
+            return False
+        else:
+            return (queen_spades in round.cards_in_play)
+
+    def point_cards_remaining(self, round, player):
+        ''' Retrieves the number of point cards that could be played by other players '''
+        count = 0
+        for card in round.cards_in_play:
+            if card._getPoints() > 0:
+                count += 1
+        for card in player.hand:
+            if card._getPoints > 0:
+                count -= 1
+        return count
 
     def _suggest_0(self, round, trick, player):
         return player.hand.getRandomCard()
@@ -37,16 +72,27 @@ class AI:
         choices = {}
         for choice in player.hand:
             val = self._heuristic(round, trick, player, choice)
-
             # Don't consider illegal moves
             if val == None:
                 continue
+            choices[choice] = val
+            print val
 
-            weight_factor = (1 - (choice.getWeight() / 14.0))
-            point_factor = choice._getPoints() / 13.0
-            choices[choice] = (point_factor + weight_factor) / val
+        if self.drained_of_lead(trick, player):
+            return max(choices, key=choices.get)
+        else:
+            return min(choices, key=choices.get)
 
-        return max(choices, key=choices.get)
+
+    def drained_of_lead(self, trick, player):
+        winning_card = trick.current_winning_card()
+        if winning_card == None:
+            return False
+
+        if not player.hand.hasSuit(winning_card.suit):
+            return True
+        return False
+
 
     def _heuristic(self, round, trick, player, card_choice):
         ''' Used by bots to decide which card to play (card with min(heuristic) ) '''
@@ -54,9 +100,12 @@ class AI:
             return None
 
         current_trick_value = trick.value()
-        current_card_value = (card_choice._getPoints() / 13.0)
-        chance_to_win = self.chance_of_winning(round, trick, card_choice)
-        score = max(0.01, chance_to_win)
+        current_card_value = card_choice._getPoints()
+        threat = self.threat(round, player)
+        weight_factor = (card_choice.getWeight() / 14.0)
+        chance_to_win = max(0.01, self.chance_of_winning(round, trick, card_choice))
+
+        score = (current_card_value + current_trick_value + threat + weight_factor) * chance_to_win
         return score
 
     def cards_that_can_beat(self, round, card_choice):
