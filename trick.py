@@ -88,7 +88,6 @@ class Trick:
         print "The trick is over. {0} won the trick, and received {1} points." \
             .format(winning_player.name, trick_points)
 
-
     def moves_left(self):
         return 4 - len(self.played_cards)
 

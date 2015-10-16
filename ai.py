@@ -31,19 +31,23 @@ class AI:
 
     def _suggest_pass_1(self, player):
         passes_left = len(player.hand) - 10
-        suitOrder = {"♣": 1, "♦": 7, "♥": 13, "♠": 16}
+        suitOrder = {"♣": 1, "♦": 7, "♥": 11, "♠": 14}
+        holds_queen = player.hand.has_queen()
 
         # Increase the passing priority of a suit if it can be drained easily
         for k, v in suitOrder.iteritems():
             count = player.hand.suitCount(k)
-            if count <= 3:
+            if count <= 2:
                 suitOrder[k] += (4 * passes_left * (3 - count))
-
         choices = {}
-        for card in player.hand:
-            value = suitOrder.get(card.suit) + card.getWeight()
-            choices[card] = value
-
+        for p_card in player.hand:
+            value = suitOrder.get(p_card.suit) + p_card.getWeight()
+            #we should probably hold onto the queen
+            if holds_queen:
+                if p_card.suit == "♠" and p_card.getWeight() <= 12:
+                    count = self.cards_below_qspades(player)
+                    value -= 5 * count
+            choices[p_card] = value
         return max(choices, key=choices.get)
 
     def threat(self, round, trick, player, card_choice):
@@ -85,6 +89,13 @@ class AI:
             return False
         else:
             return (queen_spades in round.cards_in_play)
+
+    def cards_below_qspades(self, player):
+        count = 0
+        for card in player.hand:
+            if card.suit == '♠':
+                count += 1
+        return count
 
     def suit_remaining(self, round, player, suit):
         ''' Retrieves the number of point cards that could be played by other players '''

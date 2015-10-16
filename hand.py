@@ -25,6 +25,10 @@ class Hand:
         '''Empties the hand'''
         self.cards = []
 
+    def has_queen(self):
+        queen_spades = card.Card('♠', 'Q')
+        return queen_spades in self.cards
+
     def play_card(self, choice):
         ''' Removes the card from the hand and puts it in play.'''
         try:
