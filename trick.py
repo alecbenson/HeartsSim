@@ -124,9 +124,9 @@ class Trick:
             if chosenCard.suit == '♣':
                 return True
             if not player.hand.hasSuit('♣'):
-                if (chosenCard.suit != '♥') or not (chosenCard.suit == '♠' and chosenCard.value == 'Q'):
-                    return True
-                return False
+                if (chosenCard.suit == '♥') or (chosenCard.suit == '♠' and chosenCard.value == 'Q'):
+                    return False
+                return True
         if chosenCard.suit == self.start_card.suit:
             return True
         if not player.hand.hasSuit(self.start_card.suit):

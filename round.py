@@ -39,8 +39,6 @@ class Round:
         # Break hearts if card is worth points and hearts is not broken
         if chosenCard._getPoints() > 0 and self.heartsBroken == False:
             self.breakHearts()
-        # When update is called, we know the first trick is over
-        self.firstTrick = False
 
         # Add to the discard and cards in play pile
         self.cards_in_play.remove(chosenCard)
@@ -69,6 +67,7 @@ class Round:
 
             players = current_trick.orderPlayers(players)
             print current_trick
+            self.firstTrick = False
 
     def passCards(self, players):
         # If we are not holding cards, return
