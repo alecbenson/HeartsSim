@@ -60,8 +60,8 @@ class AI:
         hearts_remaining = self.suit_remaining(round, player, '♥')
         p_queen = queen_remaining / other_cards
         p_heart = hearts_remaining / other_cards
-        moves_after = trick.moves_left() - 1
-        win_chance = self.chance_of_winning(round, trick, player, card_choice)
+        moves_after = max(0.01, trick.moves_left() - 1)
+        win_chance = max(0.01, self.chance_of_winning(round, trick, player, card_choice))
         d_threat = self.drained_threat(round, trick, player, card_choice)
 
         threat = (((1 * p_heart) + (13 * p_queen) + d_threat) * moves_after) * win_chance
