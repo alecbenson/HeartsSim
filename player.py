@@ -17,6 +17,12 @@ class Player_Base:
         '''Adds X points to the player's score'''
         self.score += points
 
+    def forget_drained_cards(self):
+        return
+
+    def remember_drained_suit(self, opponent, card):
+        return
+
 
 class Bot(Player_Base):
 
@@ -63,9 +69,6 @@ class Human(Player_Base):
         self.hand = hand.Hand()
         self.score = 0
         self.passedCards = []
-
-    def remember_drained_suit(self, opponent, card):
-        return
 
     def _isSelectionInBounds(self, index):
         '''

@@ -72,8 +72,9 @@ class AI:
             if opponent in player.drained_players:
                 for drained_suit in player.drained_players[opponent]:
                     if drained_suit == card_choice.suit:
-                        #print "{0} is drained of {1} so playing {2} of {3} might not be good" \
-                        #    .format(opponent.name, drained_suit, card_choice.value, card_choice.suit)
+                        if player.debug:
+                            print "{0} is drained of {1} so playing {2} of {3} might not be good" \
+                                .format(opponent.name, drained_suit, card_choice.value, card_choice.suit)
                         drained_threat += 1.0/len(next_players)
         return drained_threat
 
