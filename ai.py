@@ -100,8 +100,14 @@ class AI:
         avg_win_chance = (max_win_chance + min_win_chance) / 2.0
 
         if avg_win_chance <= 0.1:
+            if player.debug:
+                print "PLAYING {0} of {1} : maximizing heuristic, avg: {2}" \
+                    .format(max_choice.value, max_choice.suit, avg_win_chance)
             return max_choice
         else:
+            if player.debug:
+                print "PLAYING {0} of {1} : minimizing heuristic, avg: {2}" \
+                    .format(min_choice.value, min_choice.suit, avg_win_chance)
             return min_choice
 
     def max_heuristic(self, choices):
@@ -128,6 +134,9 @@ class AI:
         threat = self.threat(round, trick, player, card_choice)
 
         score = (current_card_value + current_trick_value + threat)
+        if player.debug:
+            print "{0} of {1} : heuristic {2}" \
+                .format(card_choice.value, card_choice.suit, score)
         return score
 
     def cards_that_can_beat(self, round, player, card_choice):

@@ -24,22 +24,30 @@ class Bot(Player_Base):
         self.name = name
         self.hand = hand.Hand()
         self.score = 0
+        self.debug = False
         self.passedCards = []
         self.intelligence = ai.AI(complexity)
 
     def queryCardToPass(self):
         suggestion = self.intelligence.suggest_pass(self)
+
+        if self.debug:
+            print self.hand
+            print "{0} passed the {1} of {2}\n\n\n" \
+                .format(self.name, suggestion.value, suggestion.suit)
         return self.hand.play_card(suggestion)
 
-
     def queryCardToPlay(self, prompt, round, trick):
+        if self.debug:
+            print self.hand
+            print "It's {0}'s turn to play: ".format(self.name)
         return self.intelligence.suggest_move(round, trick, self)
 
 
 class Human(Player_Base):
     '''A class that represents a card player'''
 
-    def __init__(self, name, complexity = 0):
+    def __init__(self, name, complexity=0):
         self.name = name
         self.hand = hand.Hand()
         self.score = 0

@@ -10,7 +10,6 @@ class Round:
         self.heartsBroken = False
         self.firstTrick = True
         self.count = 0
-        self.discard_pile = []
         self.cards_in_play = deck.Deck()
 
     def newRound(self):
@@ -37,14 +36,13 @@ class Round:
                 return player
 
     def update(self, chosenCard):
-        # Break hearts if the heart is a legal move and hearts is not broken
-        if chosenCard.suit == "♥" and self.heartsBroken == False:
+        # Break hearts if card is worth points and hearts is not broken
+        if chosenCard._getPoints() > 0 and self.heartsBroken == False:
             self.breakHearts()
         # When update is called, we know the first trick is over
         self.firstTrick = False
 
         # Add to the discard and cards in play pile
-        self.discard_pile.append(chosenCard)
         self.cards_in_play.remove(chosenCard)
 
     def new_trick_text(self):
@@ -58,9 +56,10 @@ class Round:
     def playTricks(self, players):
         # Set initial turn order
         current_trick = trick.Trick(players, self)
+        self.passCards(players)
+
         startPlayer = self._findTwo(players)
         players = current_trick.orderPlayers(players, startPlayer)
-        self.passCards(players)
 
         # There are 13 tricks in a hand
         for i in range(13):
@@ -73,8 +72,7 @@ class Round:
 
     def passCards(self, players):
         # If we are not holding cards, return
-        round_count = self.count
-        if (round_count % 4) == 3:
+        if (self.count % 4) == 3:
             return
 
         # pick 3 cards to give up
@@ -85,17 +83,17 @@ class Round:
 
         for player in players:
             i = players.index(player)
-            if (round_count % 4) == 0:  # Passing left
+            if (self.count % 4) == 0:  # Passing left
                 for card in players[(i + 1) % 4].passedCards:
                     player.hand.add_card(card)
                 player.hand.sortCards()
 
-            elif (round_count % 4) == 1:  # Passing right
+            elif (self.count % 4) == 1:  # Passing right
                 for card in players[(i + 3) % 4].passedCards:
                     player.hand.add_card(card)
                 player.hand.sortCards()
 
-            elif (round_count % 4) == 2:  # Passing Across
+            elif (self.count % 4) == 2:  # Passing Across
                 for card in players[(i + 2) % 4].passedCards:
                     player.hand.add_card(card)
                 player.hand.sortCards()

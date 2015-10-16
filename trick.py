@@ -39,7 +39,9 @@ class Trick:
         if self.start_card == None:
             self.start_card = chosenCard
         # Inform players that a move has been made
-        print "{0} played:\n{1}".format(player.name, chosenCard)
+        bold = '\033[1m'
+        reset = '\033[0m'
+        print "{0}{1} played:\n{2}{3}".format(bold, player.name, chosenCard, reset)
 
     def score(self):
         ''' Returns the player that won the trick and awards them points '''
