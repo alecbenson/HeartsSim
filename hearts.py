@@ -83,7 +83,6 @@ class HeartsGame:
         '''Adds additional bot players into the game'''
         if self.numHumanPlayers >= self.maxPlayers:
             return
-
         botsToAdd = self.maxPlayers - self.numHumanPlayers
         for index in range(botsToAdd):
             newBot = player.Bot("Bot", 1)

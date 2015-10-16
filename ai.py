@@ -58,9 +58,24 @@ class AI:
         p_heart = hearts_remaining / other_cards
         moves_after = trick.moves_left() - 1
         win_chance = self.chance_of_winning(round, trick, player, card_choice)
+        d_threat = self.drained_threat(round, trick, player, card_choice)
 
-        threat = (((1 * p_heart) + (13 * p_queen)) * moves_after) * win_chance
+        threat = (((1 * p_heart) + (13 * p_queen) + d_threat) * moves_after) * win_chance
         return threat
+
+    def drained_threat(self, round, trick, player, card_choice):
+        drained_threat = 0
+        current_position = trick.players.index(player) + 1
+        next_players = trick.players[current_position:]
+
+        for opponent in next_players:
+            if opponent in player.drained_players:
+                for drained_suit in player.drained_players[opponent]:
+                    if drained_suit == card_choice.suit:
+                        #print "{0} is drained of {1} so playing {2} of {3} might not be good" \
+                        #    .format(opponent.name, drained_suit, card_choice.value, card_choice.suit)
+                        drained_threat += 1.0/len(next_players)
+        return drained_threat
 
     def queen_remaining(self, round, player):
         ''' Returns true if the queen of spades is in play and the player does not have it '''

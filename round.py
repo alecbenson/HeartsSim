@@ -39,22 +39,27 @@ class Round:
         # Break hearts if card is worth points and hearts is not broken
         if chosenCard._getPoints() > 0 and self.heartsBroken == False:
             self.breakHearts()
+        # When update is called, we know the first trick is over
+        self.firstTrick = False
 
         # Add to the discard and cards in play pile
         self.cards_in_play.remove(chosenCard)
 
     def new_trick_text(self):
+        reset = '\033[0m'
         bold = '\033[1m'
         underline = '\033[4m'
         dashes = "\t" * 3
         text = "New Trick"
-        reset = '\033[0m'
         print "{0}{1}{2}{3}{2}{4}".format(bold, underline, dashes, text, reset)
 
     def playTricks(self, players):
         # Set initial turn order
         current_trick = trick.Trick(players, self)
         self.passCards(players)
+
+        for player in players:
+            player.forget_drained_cards()
 
         startPlayer = self._findTwo(players)
         players = current_trick.orderPlayers(players, startPlayer)
@@ -67,7 +72,6 @@ class Round:
 
             players = current_trick.orderPlayers(players)
             print current_trick
-            self.firstTrick = False
 
     def passCards(self, players):
         # If we are not holding cards, return

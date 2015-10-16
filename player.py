@@ -27,10 +27,10 @@ class Bot(Player_Base):
         self.debug = False
         self.passedCards = []
         self.intelligence = ai.AI(complexity)
+        self.drained_players = dict()
 
     def queryCardToPass(self):
         suggestion = self.intelligence.suggest_pass(self)
-
         if self.debug:
             print self.hand
             print "{0} passed the {1} of {2}\n\n\n" \
@@ -43,6 +43,17 @@ class Bot(Player_Base):
             print "It's {0}'s turn to play: ".format(self.name)
         return self.intelligence.suggest_move(round, trick, self)
 
+    def remember_drained_suit(self, opponent, drained_suit):
+        if opponent == self:
+            return
+        if opponent in self.drained_players:
+            if drained_suit in self.drained_players[opponent]:
+                return
+        self.drained_players.setdefault(opponent, []).append(drained_suit)
+
+    def forget_drained_cards(self):
+        self.drained_players = dict()
+
 
 class Human(Player_Base):
     '''A class that represents a card player'''
@@ -52,6 +63,9 @@ class Human(Player_Base):
         self.hand = hand.Hand()
         self.score = 0
         self.passedCards = []
+
+    def remember_drained_suit(self, opponent, card):
+        return
 
     def _isSelectionInBounds(self, index):
         '''

@@ -25,6 +25,17 @@ class Trick:
 
             self._confirm_move(player, chosenCard)
 
+    def _record_drained_players(self, opponent, chosenCard):
+        if self.start_card == None:
+            return
+
+        for player in self.players:
+            if player == opponent:
+                continue
+
+            if self.start_card.suit != chosenCard.suit:
+                player.remember_drained_suit(opponent, self.start_card.suit)
+
     def _confirm_move(self, player, chosenCard):
         '''
         A helper function to update the status of the trick after
@@ -35,6 +46,8 @@ class Trick:
         # Inform the round if hearts were broken or that the first trick is
         # over
         self.round.update(chosenCard)
+        self._record_drained_players(player, chosenCard)
+
         # Update the start card of the trick if necessary
         if self.start_card == None:
             self.start_card = chosenCard
@@ -75,6 +88,7 @@ class Trick:
         print "The trick is over. {0} won the trick, and received {1} points." \
             .format(winning_player.name, trick_points)
 
+
     def moves_left(self):
         return 4 - len(self.played_cards)
 
@@ -86,6 +100,16 @@ class Trick:
             if card.suit == current_winner.suit:
                 if card.getWeight > current_winner.getWeight:
                     current_winner = card
+        return current_winner
+
+    def current_winning_player(self):
+        if self.start_card == None:
+            return None
+        current_winner = self.start_card
+        for player, card in self.played_cards.iteritems():
+            if card.suit == current_winner.suit:
+                if card.getWeight > current_winner.getWeight:
+                    current_winner = player
         return current_winner
 
     def card_list(self):
