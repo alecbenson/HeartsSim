@@ -64,7 +64,7 @@ class AI:
         win_chance = max(0.01, self.chance_of_winning(round, trick, player, card_choice))
         d_threat = self.drained_threat(round, trick, player, card_choice)
 
-        threat = (((1 * p_heart) + (13 * p_queen) + d_threat) * moves_after) * win_chance
+        threat = (d_threat + p_heart + (13 * p_queen)) * win_chance
         return threat
 
     def drained_threat(self, round, trick, player, card_choice):
@@ -79,7 +79,7 @@ class AI:
                         if player.debug:
                             print "{0} is drained of {1} so playing {2} of {3} might not be good" \
                                 .format(opponent.name, drained_suit, card_choice.value, card_choice.suit)
-                        drained_threat += 1.0/len(next_players)
+                        drained_threat += 1.0
         return drained_threat
 
     def queen_remaining(self, round, player):
@@ -120,28 +120,31 @@ class AI:
 
         max_choice = self.max_heuristic(choices)
         min_choice = self.min_heuristic(choices)
-        max_win_chance = self.chance_of_winning(
+        max_win_chance = self._heuristic(
             round, trick, player, max_choice)
-        min_win_chance = self.chance_of_winning(
+        min_win_chance = self._heuristic(
             round, trick, player, min_choice)
-        avg_win_chance = (max_win_chance + min_win_chance) / 2.0
 
-        if avg_win_chance <= 0.1:
+        if abs(max_win_chance - min_win_chance) < 0.1 or round.firstTrick:
             if player.debug:
-                print "PLAYING {0} of {1} : maximizing heuristic, avg: {2}" \
-                    .format(max_choice.value, max_choice.suit, avg_win_chance)
+                print "PLAYING {0} of {1} : maximizing heuristic, chance: {2}" \
+                    .format(max_choice.value, max_choice.suit, max_win_chance)
             return max_choice
         else:
             if player.debug:
-                print "PLAYING {0} of {1} : minimizing heuristic, avg: {2}" \
-                    .format(min_choice.value, min_choice.suit, avg_win_chance)
+                print "PLAYING {0} of {1} : minimizing heuristic, chance: {2}, max {3}" \
+                    .format(min_choice.value, min_choice.suit, min_win_chance, max_win_chance)
             return min_choice
 
     def max_heuristic(self, choices):
+        #Get the tuple of the max item
         temp = max(choices.iteritems(), key=operator.itemgetter(1))
-        choices = [k for k, v in choices.items() if v == temp[1]
+
+        #Play the highest card with a close heuristic
+        choices = [k for k, v in choices.items() if abs(v - temp[1]) <= 0.05
                    and k.getWeight() >= temp[0].getWeight()]
-        best = max(choices, key=lambda p: p.getWeight)
+
+        best = max(choices, key=lambda p: p.getWeight())
         return best
 
     def min_heuristic(self, choices):
@@ -159,7 +162,6 @@ class AI:
         current_trick_value = (trick.value() / 26.0)
         current_card_value = (card_choice._getPoints() / 13.0)
         threat = self.threat(round, trick, player, card_choice)
-
         score = (current_card_value + current_trick_value + threat)
         if player.debug:
             print "{0} of {1} : heuristic {2}" \
