@@ -100,4 +100,5 @@ class HeartsGame:
         self.players.append(player)
 
 if __name__ == '__main__':
+    random.seed()
     game = HeartsGame()
