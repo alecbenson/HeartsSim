@@ -77,7 +77,6 @@ class AI:
             if card_choice.getWeight() < current_winning.getWeight():
                 return 0
             else:
-                print "This move makes me winning the trick"
                 result = card_choice.getWeight() - current_winning.getWeight()
         else:
             return 0
